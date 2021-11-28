@@ -2,7 +2,7 @@
 
 A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI client
 
-![tg screenshot](tg-screenshot.png)
+![arigram screenshot](arigram-screenshot.png)
 
 
 ## Features

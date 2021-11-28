@@ -1,0 +1,14 @@
+.mypy_cache/
+venv/
+__pycache__
+.env
+dist
+*.log*
+Makefile
+.idea/
+.vim/
+*monkeytype.sqlite3
+.vscode/
+build/
+MANIFEST
+arigram.egg-info/

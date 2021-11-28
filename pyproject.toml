@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "arigram"
+version = "0.1.0"
+description = "A fork of tg -- a hackable telegram TUI client"
+authors = ["TruncatedDinosour <truncateddinosour@gmail.com>"]
+license = "Unlicense"
+packages = [{ include = "arigram"}]
+readme = "README.md"
+homepage = "https://github.com/TruncatedDinosour/arigram"
+repository = "https://github.com/TruncatedDinosour/arigram"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-telegram = "0.14.0"
+
+[tool.poetry.dev-dependencies]
+black = "20.8b1"
+flake8 = "3.8.4"
+isort = "5.6.2"
+mypy = "0.812"
+
+[tool.poetry.scripts]
+arigram = "arigram.__main__:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+line_length = 79
+multi_line_output = 3
+include_trailing_comma = true

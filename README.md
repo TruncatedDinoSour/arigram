@@ -69,7 +69,7 @@ This option is recommended:
 git clone https://github.com/TruncatedDinosour/arigram.git
 cd git
 pip install --upgrade --user -r requirements.txt
-pip install .
+pip install --upgrade --user .
 ```
 
 And add this to `~/.bashrc` or whatever POSIX complient shell you use:

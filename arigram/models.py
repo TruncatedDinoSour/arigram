@@ -604,7 +604,7 @@ class MsgModel:
         # tdlib could doesn't guarantee number of messages, so we need to
         # send another request on demand
         # see https://github.com/tdlib/td/issues/168
-        for i in range(3):
+        for _ in range(3):
             if len(messages) >= limit + offset:
                 break
             result = self.tg.get_chat_history(

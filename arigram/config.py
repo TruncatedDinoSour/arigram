@@ -8,7 +8,6 @@ import runpy
 from typing import Any, Dict, Optional
 
 _os_name = platform.system()
-_darwin = "Darwin"
 _linux = "Linux"
 
 
@@ -48,8 +47,8 @@ else:
     )
 
 # TODO: use mailcap instead of editor
-LONG_MSG_CMD = "vim + -c 'startinsert' {file_path}"
-EDITOR = os.environ.get("EDITOR", "vi")
+EDITOR = os.environ.get("EDITOR", "vim")
+LONG_MSG_CMD = f"{EDITOR} -- {{file_path}}"
 
 if _os_name == _linux:
     DEFAULT_OPEN = "xdg-open {file_path}"
@@ -60,7 +59,7 @@ if _os_name == _linux:
     if os.environ.get("WAYLAND_DISPLAY"):
         COPY_CMD = "wl-copy"
     else:
-        COPY_CMD = "xclip -selection c"
+        COPY_CMD = "xclip -selection cliboard"
 else:
     COPY_CMD = "pbcopy"
 
@@ -70,7 +69,7 @@ MSG_FLAGS: Dict[str, str] = {}
 
 ICON_PATH = os.path.join(os.path.dirname(__file__), "resources", "arigram.png")
 
-URL_VIEW = "urlview"
+URL_VIEW = None
 
 USERS_COLORS = tuple(range(2, 16))
 
@@ -94,11 +93,11 @@ else:
 
     if not PHONE:
         print(
-            "Enter your phone number in international format (including country code)"
+            "Enter your phone number in international format, including country code (example: +5037754762346)"
         )
-        PHONE = input("phone> ")
+        PHONE = input("phone: ")
         if not PHONE.startswith("+"):
             PHONE = "+" + PHONE
 
-    with open(CONFIG_FILE, "w") as f:
+    with open(CONFIG_FILE, "a") as f:
         f.write(f"PHONE = '{PHONE}'\n")

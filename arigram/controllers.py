@@ -2,6 +2,7 @@ import logging
 import os
 import random
 import shlex
+import webbrowser
 from datetime import datetime
 from functools import partial, wraps
 from queue import Queue
@@ -120,7 +121,7 @@ class Controller:
     def open_url(self) -> None:
         msg = MsgProxy(self.model.current_msg)
         if not msg.is_text:
-            return self.present_error("Does not contain urls")
+            return self.present_error("Does not contain text")
         text = msg["content"]["text"]["text"]
         urls = []
         for entity in msg["content"]["text"]["entities"]:
@@ -137,13 +138,16 @@ class Controller:
         if not urls:
             return self.present_error("No url to open")
         if len(urls) == 1:
-            with suspend(self.view) as s:
-                s.call(
-                    config.DEFAULT_OPEN.format(file_path=shlex.quote(urls[0]))
-                )
+            with suspend(self.view) as _:
+                webbrowser.open(urls[0])
             return
         with suspend(self.view) as s:
-            s.run_with_input(config.URL_VIEW, "\n".join(urls))
+            if config.URL_VIEW is not None:
+                s.run_with_input(config.URL_VIEW, "\n".join(urls))
+            else:
+                fzf = pyfzf.FzfPrompt()
+                url = fzf.prompt(urls)[0]
+                webbrowser.open(url)
 
     @staticmethod
     def format_help(bindings: Dict[str, HandlerType]) -> str:
@@ -334,7 +338,7 @@ class Controller:
         if not self.can_send_msg() or chat_id is None:
             self.present_info("Can't send msg in this chat")
             return
-        with NamedTemporaryFile("r+", suffix=".txt") as f, suspend(
+        with NamedTemporaryFile("r+", suffix=".md") as f, suspend(
             self.view
         ) as s:
             self.tg.send_chat_action(chat_id, ChatAction.chatActionTyping)
@@ -528,7 +532,7 @@ class Controller:
 
     def _open_msg(self, msg: MsgProxy, cmd: str = None) -> None:
         if msg.is_text:
-            with NamedTemporaryFile("w", suffix=".txt") as f:
+            with NamedTemporaryFile("w", suffix=".md") as f:
                 f.write(msg.text_content)
                 f.flush()
                 with suspend(self.view) as s:
@@ -576,7 +580,7 @@ class Controller:
         if not msg.can_be_edited:
             return self.present_error("Meessage can't be edited!")
 
-        with NamedTemporaryFile("r+", suffix=".txt") as f, suspend(
+        with NamedTemporaryFile("r+", suffix=".md") as f, suspend(
             self.view
         ) as s:
             f.write(msg.text_content)

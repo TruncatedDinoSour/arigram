@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
-from _curses import window
+from _curses import window  # type: ignore
 
 from arigram import config
 from arigram.colors import (
@@ -212,7 +212,7 @@ class ChatView:
         self, current: int, chats: List[Dict[str, Any]], title: str = "Chats"
     ) -> None:
         self.win.erase()
-        line = curses.ACS_VLINE
+        line = curses.ACS_VLINE  # type: ignore
         width = self.w - 1
 
         self.win.vline(0, width, line, self.h)

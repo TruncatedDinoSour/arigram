@@ -85,7 +85,7 @@ EXTRA_FILE_CHOOSER_PATHS = ["..", "/", "~"]
 CUSTOM_KEYBINDS: Dict[str, Dict[str, Any]] = {}
 
 if os.path.isfile(CONFIG_FILE):
-    config_params = runpy.run_path(CONFIG_FILE)
+    config_params = runpy.run_path(CONFIG_FILE)  # type: ignore
     for param, value in config_params.items():
         if param.isupper():
             globals()[param] = value

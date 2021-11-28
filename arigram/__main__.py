@@ -1,7 +1,7 @@
 import logging.handlers
 import signal
 import threading
-from curses import window, wrapper
+from curses import window, wrapper  # type: ignore
 from functools import partial
 from types import FrameType
 

@@ -97,7 +97,7 @@ PHONE = "[phone number in international format]"
 
 ### Advanced configuration:
 
-All configurable variables can be found [here](https://github.com/paul-nameless/tg/blob/master/tg/config.py)
+All configurable variables can be found [here](/arigram/config.py)
 
 ```python
 import os

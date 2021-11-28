@@ -143,7 +143,7 @@ class Controller:
             return
         with suspend(self.view) as s:
             if config.URL_VIEW is not None:
-                s.run_with_input(config.URL_VIEW, "\n".join(urls))
+                s.run_with_input(config.URL_VIEW, "\n".join(urls))  # type: ignore
             else:
                 fzf = pyfzf.FzfPrompt()
                 url = fzf.prompt(urls)[0]

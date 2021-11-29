@@ -39,17 +39,17 @@ class LogWriter:
         pass
 
 
-def copy_func(f: Callable) -> Callable:  # type: ignore
+def copy_func(f: Callable) -> Callable[[], Any]:
     """Based on https://stackoverflow.com/a/6528148/190597 (Glenn Maynard)"""
     g = types.FunctionType(
         f.__code__,
-        f.__globals__,
-        name=f.__name__,
-        argdefs=f.__defaults__,
-        closure=f.__closure__,
+        f.__globals__,  # type: ignore
+        name=f.__name__,  # type: ignore
+        argdefs=f.__defaults__,  # type: ignore
+        closure=f.__closure__,  # type: ignore
     )
     g = functools.update_wrapper(g, f)
-    g.__kwdefaults__ = f.__kwdefaults__
+    g.__kwdefaults__ = f.__kwdefaults__  # type: ignore
     return g
 
 

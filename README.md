@@ -67,7 +67,7 @@ This option is recommended:
 
 ```sh
 git clone https://github.com/TruncatedDinosour/arigram.git
-cd git
+cd arigram
 pip install --upgrade --user -r requirements.txt
 pip install --upgrade --user .
 ```
@@ -75,7 +75,7 @@ pip install --upgrade --user .
 And add this to `~/.bashrc` or whatever POSIX complient shell you use:
 
 ```sh
-export PATH="${PATH|}:${HOME}/.local/bin"
+export PATH="${PATH}:${HOME}/.local/bin"
 ```
 
 To Launch it

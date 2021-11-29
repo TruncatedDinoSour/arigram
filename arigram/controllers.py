@@ -25,6 +25,8 @@ from arigram.utils import (
     is_yes,
     notify,
     suspend,
+    rename_function,
+    copy_func,
 )
 from arigram.views import View
 
@@ -946,18 +948,23 @@ class Controller:
             handler = binding_info["handler"]
 
             @bind(handler, [binding])
-            def handle(*args) -> None:  # type: ignore
+            @rename_function(function_name)
+            def handle(*args, fn: Callable = function) -> None:  # type: ignore
                 try:
-                    function(self, *args)
+                    fn(self, *args)
                 except Exception as e:
                     self.present_error(
                         f"{function_name}(): {e.__class__.__name__}: {e}"
                     )
 
+            log.info(
+                f"{function_name}  =  {function.__name__}()  -->  {binding}"
+            )
+
             setattr(
-                Controller,
+                self,
                 function_name,
-                handle,
+                copy_func(handle),
             )
 
 

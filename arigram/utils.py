@@ -12,12 +12,14 @@ import struct
 import subprocess
 import sys
 import unicodedata
+import types
+import functools
 from datetime import datetime
 from functools import lru_cache
 from logging.handlers import RotatingFileHandler
 from subprocess import CompletedProcess
 from types import TracebackType
-from typing import Any, Dict, Optional, Tuple, Type
+from typing import Any, Dict, Optional, Tuple, Type, Callable
 
 from arigram import config
 
@@ -35,6 +37,28 @@ class LogWriter:
 
     def flush(self) -> None:
         pass
+
+
+def copy_func(f):
+    """Based on https://stackoverflow.com/a/6528148/190597 (Glenn Maynard)"""
+    g = types.FunctionType(
+        f.__code__,
+        f.__globals__,
+        name=f.__name__,
+        argdefs=f.__defaults__,
+        closure=f.__closure__,
+    )
+    g = functools.update_wrapper(g, f)
+    g.__kwdefaults__ = f.__kwdefaults__
+    return g
+
+
+def rename_function(new_name: str) -> Callable:
+    def decorator(fun: Callable):
+        fun.__name__ = new_name
+        return fun
+
+    return decorator
 
 
 def setup_log() -> None:

@@ -1,5 +1,6 @@
 import base64
 import curses
+import functools
 import hashlib
 import logging
 import mailcap
@@ -11,15 +12,14 @@ import shlex
 import struct
 import subprocess
 import sys
-import unicodedata
 import types
-import functools
+import unicodedata
 from datetime import datetime
 from functools import lru_cache
 from logging.handlers import RotatingFileHandler
 from subprocess import CompletedProcess
 from types import TracebackType
-from typing import Any, Dict, Optional, Tuple, Type, Callable
+from typing import Any, Callable, Dict, Optional, Tuple, Type
 
 from arigram import config
 
@@ -39,7 +39,7 @@ class LogWriter:
         pass
 
 
-def copy_func(f: Callable) -> Callable:
+def copy_func(f: Callable) -> Callable:  # type: ignore
     """Based on https://stackoverflow.com/a/6528148/190597 (Glenn Maynard)"""
     g = types.FunctionType(
         f.__code__,

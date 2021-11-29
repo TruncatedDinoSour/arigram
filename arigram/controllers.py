@@ -17,6 +17,7 @@ from arigram.models import Model
 from arigram.msg import MsgProxy
 from arigram.tdlib import ChatAction, ChatType, Tdlib, get_chat_type
 from arigram.utils import (
+    copy_func,
     get_duration,
     get_mime,
     get_video_resolution,
@@ -24,9 +25,8 @@ from arigram.utils import (
     is_no,
     is_yes,
     notify,
-    suspend,
     rename_function,
-    copy_func,
+    suspend,
 )
 from arigram.views import View
 
@@ -964,7 +964,7 @@ class Controller:
             setattr(
                 self,
                 function_name,
-                copy_func(handle),
+                copy_func(handle),  # type: ignore
             )
 
 

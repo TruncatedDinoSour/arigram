@@ -44,7 +44,7 @@ def copy_func(f: Callable) -> Callable[[], Any]:
     g = types.FunctionType(
         f.__code__,
         f.__globals__,  # type: ignore
-        name=f.__name__,  # type: ignore
+        name=f.__name__,
         argdefs=f.__defaults__,  # type: ignore
         closure=f.__closure__,  # type: ignore
     )
@@ -54,7 +54,7 @@ def copy_func(f: Callable) -> Callable[[], Any]:
 
 
 def rename_function(new_name: str) -> Callable:
-    def decorator(fun: Callable):
+    def decorator(fun: Callable) -> Callable:
         fun.__name__ = new_name
         return fun
 

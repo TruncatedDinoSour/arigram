@@ -964,7 +964,7 @@ class Controller:
             setattr(
                 self,
                 function_name,
-                copy_func(handle),  # type: ignore
+                copy_func(handle),
             )
 
 

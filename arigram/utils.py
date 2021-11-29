@@ -39,7 +39,7 @@ class LogWriter:
         pass
 
 
-def copy_func(f):
+def copy_func(f: Callable) -> Callable:
     """Based on https://stackoverflow.com/a/6528148/190597 (Glenn Maynard)"""
     g = types.FunctionType(
         f.__code__,

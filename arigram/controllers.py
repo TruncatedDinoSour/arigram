@@ -13,6 +13,7 @@ import pyfzf
 from telegram.utils import AsyncResult
 
 from arigram import config
+from arigram import exceptions as ag_exception
 from arigram.models import Model
 from arigram.msg import MsgProxy
 from arigram.tdlib import ChatAction, ChatType, Tdlib, get_chat_type
@@ -29,8 +30,6 @@ from arigram.utils import (
     suspend,
 )
 from arigram.views import View
-
-from arigram import exceptions as ag_exception
 
 log = logging.getLogger(__name__)
 

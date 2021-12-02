@@ -466,7 +466,7 @@ class ChatModel:
         )
 
     def update_chat(self, chat_id: int, **updates: Dict[str, Any]) -> bool:
-        for i, chat in enumerate(self.chats):
+        for _, chat in enumerate(self.chats):
             if chat["id"] != chat_id:
                 continue
             chat.update(updates)

@@ -137,19 +137,22 @@ class StatusView:
         self.win.addstr(0, 0, msg.replace("\n", " ")[: self.w])
         self._refresh()
 
-    def get_input(self, prefix: str = "") -> Optional[str]:
+    def get_input(self, prefix: str = "input") -> Optional[str]:
         curses.curs_set(1)
         buff = ""
 
         try:
             while True:
+                prompt = f"({prefix}) "
+
                 self.win.erase()
-                line = buff[-(self.w - 1) :]
-                self.win.addstr(0, 0, f"{prefix}{line}")
+                line = buff[-(self.w - string_len_dwc(prompt) - 1) :]
+                self.win.addstr(0, 0, f"{prompt}{line}")
 
                 key = self.win.get_wch(
-                    0, min(string_len_dwc(buff + prefix), self.w - 1)
+                    0, min(string_len_dwc(buff + prompt), self.w - 1)
                 )
+
                 key = ord(key)
                 if key == 10:  # return
                     break
@@ -179,6 +182,8 @@ class ChatView:
         self.model = model
 
     def resize(self, rows: int, cols: int, width: int) -> None:
+        del cols
+
         self.h = rows - 1
         self.w = width
         self.win.resize(self.h, self.w)
@@ -294,7 +299,7 @@ class ChatView:
         if self.model.users.is_online(chat["id"]):
             flags.append("online")
 
-        if "is_pinned" in chat and chat["is_pinned"]:
+        if chat["positions"][0].get("is_pinned"):
             flags.append("pinned")
 
         if chat["notification_settings"]["mute_for"]:

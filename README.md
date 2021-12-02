@@ -7,12 +7,12 @@ A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI c
 
 ## Features
 
-- [X] view mediafiles: photo, video, voice/video notes, documents
+- [X] view media: photo, video, voice/video notes, documents
 - [X] ability to send pictures, documents, audio, video
 - [X] reply, edit, forward, delete, send messages
 - [X] stickers
 - [X] notifications
-- [X] record and send voice msgs
+- [X] record and send voice messages
 - [X] auto download files
 - [X] toggle chats: pin/unpin, mark as read/unread, mute/unmute
 - [X] message history
@@ -22,8 +22,15 @@ A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI c
 - [x] automation
 - [x] better default file picker
 - [x] custom keybindings
+- [x] consistent styling
+- [ ] drafts
+- [ ] scheduled messages
+- [ ] local passwords
+- [ ] debug mode
+- [ ] modules/addons
 - [ ] stickers (sticker keyboard)
-- [ ] search
+- [ ] less crowded UI
+- [ ] search (for users)
 - [ ] bots (bot keyboard)
 
 
@@ -66,8 +73,30 @@ brew install arigram
 This option is recommended:
 
 ```sh
+mkdir ~/.local/src
+cd ~/.local/src
 git clone https://github.com/TruncatedDinosour/arigram.git
 cd arigram
+pip install --upgrade --user -r requirements.txt
+pip install --upgrade --user .
+```
+
+## Upgrading
+
+### Homebrew
+
+```sh
+brew upgrade
+```
+
+### From sources
+
+This option is recommended:
+
+```sh
+cd ~/.local/src/arigram
+git reset --hard  # This discards every change you made
+git pull
 pip install --upgrade --user -r requirements.txt
 pip install --upgrade --user .
 ```
@@ -227,10 +256,17 @@ def send_hello(ctrl, *args) -> None:
     ctrl.model.send_message(text=f"Hello people!")  # Sends a message
 
 # CUSTOM_KEYBINDS = {"KEY": {"func": SOME_FUNCTION, "handler": CONTEXT_HANDLER}}
-CUSTOM_KEYBINDS = {"z": {"func": send_hello, "handler": msg_handler}}
+CUSTOM_KEYBINDS = {"z": {"func": send_hello, "handler": msg_handler, "repeat": False, "is_remap": False}}
 
 # What to add before file picker (while using fzf (default))
 EXTRA_FILE_CHOOSER_PATHS = ["..", "/", "~"]
+
+# This is the max truncation limit when truncating paths, messages, etc.
+TRUNCATE_LIMIT = 10
+
+# If you set this to True this will automatically disable link previews
+# WARNING: only do this if you know what you are doing, this is a dangerous option
+EXTRA_TDLIB_HEADERS = {"disable_web_page_preview": True}
 ```
 
 ### Mailcap file

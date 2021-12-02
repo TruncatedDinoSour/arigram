@@ -110,6 +110,8 @@ def get_file_handler(file_path: str) -> str:
 
     caps = get_mailcap()
     handler, view = mailcap.findmatch(caps, mtype, filename=file_path)
+
+    del view
     if not handler:
         return config.DEFAULT_OPEN.format(file_path=shlex.quote(file_path))
     return handler

@@ -28,8 +28,11 @@ def update_handler(
         def wrapper(controller: Controller, update: Dict[str, Any]) -> None:
             try:
                 fun(controller, update)
-            except Exception:
-                log.exception("Error happened in handler: %s", update_type)
+            except Exception as e:
+                log.exception(
+                    f"Error happened in handler: {update_type}; {e.__class__.__name__}: {e}"
+                )
+                exit()
 
         handlers[update_type] = wrapper
         return wrapper
@@ -84,23 +87,9 @@ def update_new_message(controller: Controller, update: Dict[str, Any]) -> None:
 def update_chat_order(controller: Controller, update: Dict[str, Any]) -> None:
     current_chat_id = controller.model.current_chat_id
     chat_id = update["chat_id"]
-    order = update["order"]
+    order = update["position"]["order"]
 
     if controller.model.chats.update_chat(chat_id, order=order):
-        controller.refresh_current_chat(current_chat_id)
-
-
-@update_handler("updateChatPosition")
-def update_chat_position(
-    controller: Controller, update: Dict[str, Any]
-) -> None:
-    current_chat_id = controller.model.current_chat_id
-    chat_id = update["chat_id"]
-    info = {}
-    info["order"] = update["position"]["order"]
-    if "is_pinned" in update:
-        info["is_pinned"] = update["is_pinned"]
-    if controller.model.chats.update_chat(chat_id, **info):
         controller.refresh_current_chat(current_chat_id)
 
 
@@ -139,14 +128,30 @@ def update_chat_is_pinned(
     controller: Controller, update: Dict[str, Any]
 ) -> None:
     chat_id = update["chat_id"]
-    is_pinned = update["is_pinned"]
-    order = update["order"]
+    is_pinned = update["position"]["is_pinned"]
+    order = update["position"]["order"]
 
     current_chat_id = controller.model.current_chat_id
     if controller.model.chats.update_chat(
         chat_id, is_pinned=is_pinned, order=order
     ):
         controller.refresh_current_chat(current_chat_id)
+
+
+@update_handler("updateChatPosition")
+def update_chat_position(
+    controller: Controller, update: Dict[str, Any]
+) -> None:
+    current_chat_id = controller.model.current_chat_id
+    chat_id = update["chat_id"]
+    info = {}
+    info["order"] = update["position"]["order"]
+    if update["position"]["is_pinned"]:
+        info["is_pinned"] = update["position"]["is_pinned"]
+        update_chat_is_pinned(controller, update)
+    if controller.model.chats.update_chat(chat_id, **info):
+        controller.refresh_current_chat(current_chat_id)
+    controller.render()
 
 
 @update_handler("updateChatReadOutbox")
@@ -187,7 +192,7 @@ def update_chat_draft_message(
     chat_id = update["chat_id"]
     # FIXME: ignoring draft message itself for now because UI can't show it
     # draft_message = update["draft_message"]
-    order = update["order"]
+    order = update["position"]["order"]
 
     current_chat_id = controller.model.current_chat_id
     if controller.model.chats.update_chat(chat_id, order=order):

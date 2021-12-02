@@ -30,6 +30,8 @@ from arigram.utils import (
 )
 from arigram.views import View
 
+from arigram import exceptions as ag_exception
+
 log = logging.getLogger(__name__)
 
 # start scrolling to next page when number of the msgs left is less than value.
@@ -48,6 +50,7 @@ def bind(
     binding: Dict[str, HandlerType],
     keys: List[str],
     repeat_factor: bool = False,
+    remap: bool = False,
 ) -> Callable:
     """bind handlers to given keys"""
 
@@ -61,9 +64,20 @@ def bind(
             return fun(self)
 
         for key in keys:
-            assert (
-                key not in binding
-            ), f"Key {key} already binded to {binding[key]}"
+            if key in binding and not remap:
+                val = binding.get(key)
+                val_mem = hex(id(val))
+
+                if val is None:
+                    log.error(
+                        f"Most likely a bug: {key} is bound to {val} (in {val_mem}), this should not happen"
+                    )
+                message = f"Key {key} already bound to {val} (in {val_mem})"
+
+                log.error(message)
+
+                raise ag_exception.KeyBoundError(message)
+
             binding[key] = fun if repeat_factor else _no_repeat_factor  # type: ignore
 
         return wrapper
@@ -289,7 +303,7 @@ class Controller:
         if chat_id is None:
             return
         reply_to_msg = self.model.current_msg_id
-        if msg := self.view.status.get_input():
+        if msg := self.view.status.get_input("reply"):
             self.model.view_all_msgs()
             self.tg.reply_message(chat_id, reply_to_msg, msg)
             self.present_info("Message reply sent")
@@ -327,7 +341,7 @@ class Controller:
             self.present_info("Can't send msg in this chat")
             return
         self.tg.send_chat_action(chat_id, ChatAction.chatActionTyping)
-        if msg := self.view.status.get_input():
+        if msg := self.view.status.get_input("message"):
             self.model.send_message(text=msg)
             self.present_info("Message sent")
         else:
@@ -395,7 +409,7 @@ class Controller:
 
             with suspend(self.view) as s:
                 resp = self.view.status.get_input(
-                    f"Review <{file_path}>? [Y/n]: "
+                    f"review <{file_path}>? (Y/n)"
                 )
 
                 if resp is None:
@@ -405,7 +419,7 @@ class Controller:
                         sv.open_file(file_path, None)
 
                 resp_up = self.view.status.get_input(
-                    f"Upload <{file_path}>? [y/N]: "
+                    f"upload <{file_path}>? (y/N)"
                 )
 
                 if resp_up is None or is_no(resp_up):
@@ -423,7 +437,7 @@ class Controller:
         mime = get_mime(file_path)
         if mime in ("image", "video", "animation"):
             resp = self.view.status.get_input(
-                f"Upload <{file_path}> compressed? [Y/n]: "
+                f"upload <{file_path}> compressed? (Y/n)"
             )
             self.render_status()
             if resp is None:
@@ -457,7 +471,7 @@ class Controller:
     @bind(msg_handler, ["sv"])
     def send_video(self) -> None:
         """Enter file path and send compressed video"""
-        file_path = self.view.status.get_input()
+        file_path = self.view.status.get_input("file path")
         if not file_path or not os.path.isfile(file_path):
             return
         chat_id = self.model.chats.id_by_index(self.model.current_chat)
@@ -474,7 +488,7 @@ class Controller:
         self,
         send_file_fun: Callable[[str, int], AsyncResult],
     ) -> None:
-        _input = self.view.status.get_input()
+        _input = self.view.status.get_input("file path")
         if _input is None:
             return
         file_path = os.path.expanduser(_input)
@@ -495,7 +509,7 @@ class Controller:
                 )
             )
         resp = self.view.status.get_input(
-            f"Do you want to send recording: {file_path}? [Y/n]"
+            f"do you want to send recording: <{file_path}>? (Y/n)"
         )
         if resp is None or not is_yes(resp):
             return self.present_info("Voice message discarded")
@@ -556,7 +570,7 @@ class Controller:
     def open_msg_with_cmd(self) -> None:
         """Open msg or file with cmd: less %s"""
         msg = MsgProxy(self.model.current_msg)
-        cmd = self.view.status.get_input()
+        cmd = self.view.status.get_input("command")
         if not cmd:
             return
         if "%s" not in cmd:
@@ -569,6 +583,22 @@ class Controller:
     def open_current_msg(self) -> None:
         """Open msg or file with cmd in mailcap"""
         msg = MsgProxy(self.model.current_msg)
+
+        extra = str(
+            msg.text_content
+            if msg.is_text
+            else msg.caption or msg.local_path or msg.msg_id
+        )
+
+        resp = self.view.status.get_input(
+            f"open <{os.path.basename(extra)[:config.TRUNCATE_LIMIT] + '...'}>? (Y/n)"
+        )
+        if resp is None or not is_yes(resp):
+            self.present_info(
+                f"not opening message <{msg.msg_id}> from <{msg.sender_id}>"
+            )
+            return
+
         self._open_msg(msg)
 
     @bind(msg_handler, ["e"])
@@ -627,7 +657,7 @@ class Controller:
         user_ids = self._get_user_ids(is_multiple=True)
         if not user_ids:
             return
-        title = self.view.status.get_input("Group name: ")
+        title = self.view.status.get_input("group name")
         if title is None:
             return self.present_info("Cancelling creating group")
         if not title:
@@ -647,7 +677,7 @@ class Controller:
             ChatType.channel,
         ):
             resp = self.view.status.get_input(
-                "Are you sure you want to leave this group/channel?[y/N]"
+                "are you sure you want to leave this group/channel? (y/N)"
             )
             if is_no(resp or ""):
                 return self.present_info("Not leaving group/channel")
@@ -658,14 +688,14 @@ class Controller:
             return
 
         resp = self.view.status.get_input(
-            "Are you sure you want to delete the chat?[y/N]"
+            "are you sure you want to delete the chat? (y/N)"
         )
         if is_no(resp or ""):
             return self.present_info("Not deleting chat")
 
         is_revoke = False
         if chat["can_be_deleted_for_all_users"]:
-            resp = self.view.status.get_input("Delete for all users?[y/N]")
+            resp = self.view.status.get_input("delete for all users? (y/N)")
             if resp is None:
                 return self.present_info("Not deleting chat")
             self.render_status()
@@ -698,7 +728,7 @@ class Controller:
     @bind(chat_handler, ["/"])
     def search_contacts(self) -> None:
         """Search contacts and set jumps to it if found"""
-        msg = self.view.status.get_input("/")
+        msg = self.view.status.get_input("search")
         if not msg:
             return self.present_info("Search discarded")
 
@@ -789,7 +819,7 @@ class Controller:
     def toggle_pin(self) -> None:
         chat = self.model.chats.chats[self.model.current_chat]
         chat_id = chat["id"]
-        toggle = not chat["is_pinned"]
+        toggle = not chat["positions"][0].get("is_pinned")
         self.tg.toggle_chat_is_pinned(chat_id, toggle)
         self.render()
 
@@ -852,10 +882,10 @@ class Controller:
                 log.exception("Error happened in draw loop")
 
     def present_error(self, msg: str) -> None:
-        return self.update_status("Error", msg)
+        return self.update_status("Error", msg.capitalize())
 
     def present_info(self, msg: str) -> None:
-        return self.update_status("Info", msg)
+        return self.update_status("Info", msg.capitalize())
 
     def update_status(self, level: str, msg: str) -> None:
         self.queue.put(partial(self._update_status, level, msg))
@@ -914,12 +944,11 @@ class Controller:
             return
 
         # TODO: handle cases when all chats muted on global level
-        if chat["notification_settings"]["mute_for"]:
+        if chat["notification_settings"]["mute_for"] or self.model.is_me(
+            msg["sender"].get("user_id")
+        ):
             return
 
-        # notify
-        if self.model.is_me(msg["sender"].get("user_id")):
-            return
         user = self.model.users.get_user(msg.sender_id)
         name = f"{user['first_name']} {user['last_name']}"
 
@@ -946,8 +975,10 @@ class Controller:
 
             function = binding_info["func"]
             handler = binding_info["handler"]
+            repeat = binding_info.get("is_repeat", False)
+            remap = binding_info.get("is_remap", False)
 
-            @bind(handler, [binding])
+            @bind(handler, [binding], repeat_factor=repeat, remap=remap)
             @rename_function(function_name)
             def handle(*args, fn: Callable = function) -> None:  # type: ignore
                 try:
@@ -958,7 +989,7 @@ class Controller:
                     )
 
             log.info(
-                f"{function_name}  =  {function.__name__}()  -->  {binding}"
+                f"{function_name}  =  {function.__name__}() (repeat = {repeat}, remap = {remap}) -->  {binding}"
             )
 
             setattr(

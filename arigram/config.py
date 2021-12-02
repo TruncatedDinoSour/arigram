@@ -2,6 +2,7 @@
 Every parameter (except for CONFIG_FILE) can be
 overwritten by external config file
 """
+import mailcap
 import os
 import platform
 import runpy
@@ -9,6 +10,7 @@ from typing import Any, Dict, Optional
 
 _os_name = platform.system()
 _linux = "Linux"
+_global_mailcap = mailcap.getcaps()
 
 
 CONFIG_DIR = os.path.expanduser("~/.config/arigram/")
@@ -30,7 +32,6 @@ TDLIB_VERBOSITY = 0
 
 MAX_DOWNLOAD_SIZE = "10MB"
 
-# TODO: check platform
 NOTIFY_FUNCTION = None
 
 VIEW_TEXT_CMD = "less"
@@ -46,9 +47,14 @@ else:
         "ffmpeg -f avfoundation -i ':0' -c:a libopus -b:a 32k {file_path}"
     )
 
-# TODO: use mailcap instead of editor
+
 EDITOR = os.environ.get("EDITOR", "vim")
-LONG_MSG_CMD = f"{EDITOR} -- {{file_path}}"
+_, __MAILCAP_EDITOR = mailcap.findmatch(_global_mailcap, "text/markdown")
+
+if __MAILCAP_EDITOR:
+    EDITOR = str(__MAILCAP_EDITOR["view"]).split(" ", 1)[0]
+
+LONG_MSG_CMD = f"{EDITOR} '{{file_path}}'"
 
 if _os_name == _linux:
     DEFAULT_OPEN = "xdg-open {file_path}"
@@ -83,6 +89,10 @@ EXTRA_FILE_CHOOSER_PATHS = ["..", "/", "~"]
 
 CUSTOM_KEYBINDS: Dict[str, Dict[str, Any]] = {}
 
+TRUNCATE_LIMIT: int = 15
+
+EXTRA_TDLIB_HEADEARS: Dict[Any, Any] = {}
+
 if os.path.isfile(CONFIG_FILE):
     config_params = runpy.run_path(CONFIG_FILE)  # type: ignore
     for param, value in config_params.items():
@@ -95,9 +105,9 @@ else:
         print(
             "Enter your phone number in international format, including country code (example: +5037754762346)"
         )
-        PHONE = input("phone: ")
+        PHONE = input("(phone) ")
         if not PHONE.startswith("+"):
             PHONE = "+" + PHONE
 
     with open(CONFIG_FILE, "a") as f:
-        f.write(f"PHONE = '{PHONE}'\n")
+        f.write(f'\nPHONE = "{PHONE}"\n')

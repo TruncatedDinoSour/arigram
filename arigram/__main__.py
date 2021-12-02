@@ -38,7 +38,7 @@ def run(tg: Tdlib, stdscr: window) -> None:
         tg.add_update_handler(msg_type, partial(handler, controller))
 
     thread = threading.Thread(target=controller.run)
-    thread.daemon = True
+    thread.setDaemon(True)
     thread.start()
 
     controller.load_custom_keybindings()
@@ -60,6 +60,7 @@ def main() -> None:
     parse_args()
     utils.cleanup_cache()
     tg = Tdlib(
+        config.EXTRA_TDLIB_HEADEARS,
         api_id=config.API_ID,
         api_hash=config.API_HASH,
         phone=config.PHONE,

@@ -56,6 +56,16 @@ class SecretChatState(Enum):
 
 
 class Tdlib(Telegram):
+    def __init__(self, extra_headers, *args, **kwargs) -> None:
+        self.extra_headers = extra_headers
+        super().__init__(*args, **kwargs)
+
+    def _parse_data(self, data: Dict[Any, Any]) -> Dict[Any, Any]:
+        _tmp_data = data.copy()
+        _tmp_data.update(self.extra_headers)
+
+        return _tmp_data
+
     def parse_text_entities(
         self,
         text: str,
@@ -63,11 +73,13 @@ class Tdlib(Telegram):
         version: int = 2,
     ) -> AsyncResult:
         """Offline synchronous method which returns parsed entities"""
-        data = {
-            "@type": "parseTextEntities",
-            "text": text,
-            "parse_mode": {"@type": parse_mode.name, "version": version},
-        }
+        data = self._parse_data(
+            {
+                "@type": "parseTextEntities",
+                "text": text,
+                "parse_mode": {"@type": parse_mode.name, "version": version},
+            }
+        )
 
         return self._send_data(data)
 
@@ -79,14 +91,16 @@ class Tdlib(Telegram):
         if not result.error:
             text = result.update
 
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessageText",
-                "text": text,
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessageText",
+                    "text": text,
+                },
+            }
+        )
 
         return self._send_data(data)
 
@@ -98,77 +112,99 @@ class Tdlib(Telegram):
         limit: int = 0,
         synchronous: bool = False,
     ) -> None:
-        data = {
-            "@type": "downloadFile",
-            "file_id": file_id,
-            "priority": priority,
-            "offset": offset,
-            "limit": limit,
-            "synchronous": synchronous,
-        }
+        data = self._parse_data(
+            {
+                "@type": "downloadFile",
+                "file_id": file_id,
+                "priority": priority,
+                "offset": offset,
+                "limit": limit,
+                "synchronous": synchronous,
+            }
+        )
+
         return self._send_data(data)
 
     def reply_message(
         self, chat_id: int, reply_to_message_id: int, text: str
     ) -> AsyncResult:
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "reply_to_message_id": reply_to_message_id,
-            "input_message_content": {
-                "@type": "inputMessageText",
-                "text": {"@type": "formattedText", "text": text},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "reply_to_message_id": reply_to_message_id,
+                "input_message_content": {
+                    "@type": "inputMessageText",
+                    "text": {"@type": "formattedText", "text": text},
+                },
+            }
+        )
 
         return self._send_data(data)
 
     def search_contacts(self, target: str, limit: int = 10) -> AsyncResult:
-        data = {"@type": "searchChats", "query": target, "limit": limit}
+        data = self._parse_data(
+            {"@type": "searchChats", "query": target, "limit": limit}
+        )
         return self._send_data(data, block=True)
 
     def send_doc(self, file_path: str, chat_id: int) -> AsyncResult:
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessageDocument",
-                "document": {"@type": "inputFileLocal", "path": file_path},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessageDocument",
+                    "document": {"@type": "inputFileLocal", "path": file_path},
+                },
+            }
+        )
+
         return self._send_data(data)
 
     def send_audio(self, file_path: str, chat_id: int) -> AsyncResult:
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessageAudio",
-                "audio": {"@type": "inputFileLocal", "path": file_path},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessageAudio",
+                    "audio": {"@type": "inputFileLocal", "path": file_path},
+                },
+            }
+        )
+
         return self._send_data(data)
 
     def send_animation(self, file_path: str, chat_id: int) -> AsyncResult:
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessageAnimation",
-                "animation": {"@type": "inputFileLocal", "path": file_path},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessageAnimation",
+                    "animation": {
+                        "@type": "inputFileLocal",
+                        "path": file_path,
+                    },
+                },
+            }
+        )
+
         return self._send_data(data)
 
     def send_photo(self, file_path: str, chat_id: int) -> AsyncResult:
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessagePhoto",
-                "photo": {"@type": "inputFileLocal", "path": file_path},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessagePhoto",
+                    "photo": {"@type": "inputFileLocal", "path": file_path},
+                },
+            }
+        )
+
         return self._send_data(data)
 
     def send_video(
@@ -179,97 +215,124 @@ class Tdlib(Telegram):
         height: int,
         duration: int,
     ) -> AsyncResult:
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessageVideo",
-                "width": width,
-                "height": height,
-                "duration": duration,
-                "video": {"@type": "inputFileLocal", "path": file_path},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessageVideo",
+                    "width": width,
+                    "height": height,
+                    "duration": duration,
+                    "video": {"@type": "inputFileLocal", "path": file_path},
+                },
+            }
+        )
+
         return self._send_data(data)
 
     def send_voice(
         self, file_path: str, chat_id: int, duration: int, waveform: str
     ) -> AsyncResult:
-        data = {
-            "@type": "sendMessage",
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessageVoiceNote",
-                "duration": duration,
-                "waveform": waveform,
-                "voice_note": {"@type": "inputFileLocal", "path": file_path},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendMessage",
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessageVoiceNote",
+                    "duration": duration,
+                    "waveform": waveform,
+                    "voice_note": {
+                        "@type": "inputFileLocal",
+                        "path": file_path,
+                    },
+                },
+            }
+        )
+
         return self._send_data(data)
 
     def edit_message_text(
         self, chat_id: int, message_id: int, text: str
     ) -> AsyncResult:
-        data = {
-            "@type": "editMessageText",
-            "message_id": message_id,
-            "chat_id": chat_id,
-            "input_message_content": {
-                "@type": "inputMessageText",
-                "text": {"@type": "formattedText", "text": text},
-            },
-        }
+        data = self._parse_data(
+            {
+                "@type": "editMessageText",
+                "message_id": message_id,
+                "chat_id": chat_id,
+                "input_message_content": {
+                    "@type": "inputMessageText",
+                    "text": {"@type": "formattedText", "text": text},
+                },
+            }
+        )
+
         return self._send_data(data)
 
     def toggle_chat_is_marked_as_unread(
         self, chat_id: int, is_marked_as_unread: bool
     ) -> AsyncResult:
-        data = {
-            "@type": "toggleChatIsMarkedAsUnread",
-            "chat_id": chat_id,
-            "is_marked_as_unread": is_marked_as_unread,
-        }
+        data = self._parse_data(
+            {
+                "@type": "toggleChatIsMarkedAsUnread",
+                "chat_id": chat_id,
+                "is_marked_as_unread": is_marked_as_unread,
+            }
+        )
+
         return self._send_data(data)
 
     def toggle_chat_is_pinned(
         self, chat_id: int, is_pinned: bool
     ) -> AsyncResult:
-        data = {
-            "@type": "toggleChatIsPinned",
-            "chat_id": chat_id,
-            "is_pinned": is_pinned,
-        }
+        data = self._parse_data(
+            {
+                "@type": "toggleChatIsPinned",
+                "chat_id": chat_id,
+                "is_pinned": is_pinned,
+            }
+        )
+
         return self._send_data(data)
 
     def set_chat_nottification_settings(
         self, chat_id: int, notification_settings: dict
     ) -> AsyncResult:
-        data = {
-            "@type": "setChatNotificationSettings",
-            "chat_id": chat_id,
-            "notification_settings": notification_settings,
-        }
+        data = self._parse_data(
+            {
+                "@type": "setChatNotificationSettings",
+                "chat_id": chat_id,
+                "notification_settings": notification_settings,
+            }
+        )
+
         return self._send_data(data)
 
     def view_messages(
         self, chat_id: int, message_ids: list, force_read: bool = True
     ) -> AsyncResult:
-        data = {
-            "@type": "viewMessages",
-            "chat_id": chat_id,
-            "message_ids": message_ids,
-            "force_read": force_read,
-        }
+        data = self._parse_data(
+            {
+                "@type": "viewMessages",
+                "chat_id": chat_id,
+                "message_ids": message_ids,
+                "force_read": force_read,
+            }
+        )
+
         return self._send_data(data)
 
     def open_message_content(
         self, chat_id: int, message_id: int
     ) -> AsyncResult:
-        data = {
-            "@type": "openMessageContent",
-            "chat_id": chat_id,
-            "message_id": message_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "openMessageContent",
+                "chat_id": chat_id,
+                "message_id": message_id,
+            }
+        )
+
         return self._send_data(data)
 
     def forward_messages(
@@ -282,120 +345,159 @@ class Tdlib(Telegram):
         remove_caption: bool = False,
         options: Dict[str, Any] = {},
     ) -> AsyncResult:
-        data = {
-            "@type": "forwardMessages",
-            "chat_id": chat_id,
-            "from_chat_id": from_chat_id,
-            "message_ids": message_ids,
-            "as_album": as_album,
-            "send_copy": send_copy,
-            "remove_caption": remove_caption,
-            "options": options,
-        }
+        data = self._parse_data(
+            {
+                "@type": "forwardMessages",
+                "chat_id": chat_id,
+                "from_chat_id": from_chat_id,
+                "message_ids": message_ids,
+                "as_album": as_album,
+                "send_copy": send_copy,
+                "remove_caption": remove_caption,
+                "options": options,
+            }
+        )
+
         return self._send_data(data)
 
     def get_basic_group(
         self,
         basic_group_id: int,
     ) -> AsyncResult:
-        data = {
-            "@type": "getBasicGroup",
-            "basic_group_id": basic_group_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "getBasicGroup",
+                "basic_group_id": basic_group_id,
+            }
+        )
+
         return self._send_data(data)
 
     def get_basic_group_full_info(
         self,
         basic_group_id: int,
     ) -> AsyncResult:
-        data = {
-            "@type": "getBasicGroupFullInfo",
-            "basic_group_id": basic_group_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "getBasicGroupFullInfo",
+                "basic_group_id": basic_group_id,
+            }
+        )
+
         return self._send_data(data)
 
     def get_supergroup(
         self,
         supergroup_id: int,
     ) -> AsyncResult:
-        data = {
-            "@type": "getSupergroup",
-            "supergroup_id": supergroup_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "getSupergroup",
+                "supergroup_id": supergroup_id,
+            }
+        )
+
         return self._send_data(data)
 
     def get_supergroup_full_info(
         self,
         supergroup_id: int,
     ) -> AsyncResult:
-        data = {
-            "@type": "getSupergroupFullInfo",
-            "supergroup_id": supergroup_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "getSupergroupFullInfo",
+                "supergroup_id": supergroup_id,
+            }
+        )
+
         return self._send_data(data)
 
     def get_secret_chat(
         self,
         secret_chat_id: int,
     ) -> AsyncResult:
-        data = {
-            "@type": "getSecretChat",
-            "secret_chat_id": secret_chat_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "getSecretChat",
+                "secret_chat_id": secret_chat_id,
+            }
+        )
+
         return self._send_data(data)
 
     def send_chat_action(
         self, chat_id: int, action: ChatAction, progress: int = None
     ) -> AsyncResult:
-        data = {
-            "@type": "sendChatAction",
-            "chat_id": chat_id,
-            "action": {"@type": action.name, "progress": progress},
-        }
+        data = self._parse_data(
+            {
+                "@type": "sendChatAction",
+                "chat_id": chat_id,
+                "action": {"@type": action.name, "progress": progress},
+            }
+        )
+
         return self._send_data(data)
 
     def get_contacts(self) -> AsyncResult:
-        data = {
-            "@type": "getContacts",
-        }
+        data = self._parse_data(
+            {
+                "@type": "getContacts",
+            }
+        )
+
         return self._send_data(data)
 
     def leave_chat(self, chat_id: int) -> AsyncResult:
-        data = {
-            "@type": "leaveChat",
-            "chat_id": chat_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "leaveChat",
+                "chat_id": chat_id,
+            }
+        )
+
         return self._send_data(data)
 
     def join_chat(self, chat_id: int) -> AsyncResult:
-        data = {
-            "@type": "joinChat",
-            "chat_id": chat_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "joinChat",
+                "chat_id": chat_id,
+            }
+        )
+
         return self._send_data(data)
 
     def close_secret_chat(self, secret_chat_id: int) -> AsyncResult:
-        data = {
-            "@type": "closeSecretChat",
-            "secret_chat_id": secret_chat_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "closeSecretChat",
+                "secret_chat_id": secret_chat_id,
+            }
+        )
+
         return self._send_data(data)
 
     def create_new_secret_chat(self, user_id: int) -> AsyncResult:
-        data = {
-            "@type": "createNewSecretChat",
-            "user_id": user_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "createNewSecretChat",
+                "user_id": user_id,
+            }
+        )
+
         return self._send_data(data)
 
     def create_new_basic_group_chat(
         self, user_ids: List[int], title: str
     ) -> AsyncResult:
-        data = {
-            "@type": "createNewBasicGroupChat",
-            "user_ids": user_ids,
-            "title": title,
-        }
+        data = self._parse_data(
+            {
+                "@type": "createNewBasicGroupChat",
+                "user_ids": user_ids,
+                "title": title,
+            }
+        )
+
         return self._send_data(data)
 
     def delete_chat_history(
@@ -404,26 +506,35 @@ class Tdlib(Telegram):
         """
         revoke: Pass true to try to delete chat history for all users
         """
-        data = {
-            "@type": "deleteChatHistory",
-            "chat_id": chat_id,
-            "remove_from_chat_list": remove_from_chat_list,
-            "revoke": revoke,
-        }
+        data = self._parse_data(
+            {
+                "@type": "deleteChatHistory",
+                "chat_id": chat_id,
+                "remove_from_chat_list": remove_from_chat_list,
+                "revoke": revoke,
+            }
+        )
+
         return self._send_data(data)
 
     def get_user(self, user_id: int) -> AsyncResult:
-        data = {
-            "@type": "getUser",
-            "user_id": user_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "getUser",
+                "user_id": user_id,
+            }
+        )
+
         return self._send_data(data)
 
     def get_user_full_info(self, user_id: int) -> AsyncResult:
-        data = {
-            "@type": "getUserFullInfo",
-            "user_id": user_id,
-        }
+        data = self._parse_data(
+            {
+                "@type": "getUserFullInfo",
+                "user_id": user_id,
+            }
+        )
+
         return self._send_data(data)
 
 

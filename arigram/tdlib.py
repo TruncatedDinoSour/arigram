@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, Tuple
 
 from telegram.client import AsyncResult, Telegram
 
@@ -56,7 +56,7 @@ class SecretChatState(Enum):
 
 
 class Tdlib(Telegram):
-    def __init__(self, extra_headers, *args, **kwargs) -> None:
+    def __init__(self, extra_headers, *args, **kwargs) -> None:  # type: ignore
         self.extra_headers = extra_headers
         super().__init__(*args, **kwargs)
 

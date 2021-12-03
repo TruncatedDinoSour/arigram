@@ -169,7 +169,7 @@ pywin32 = ">=223"
 
 [[package]]
 name = "python-telegram"
-version = "0.14.0"
+version = "0.15.0"
 description = "Python library to help you build your own Telegram clients"
 category = "main"
 optional = false
@@ -218,7 +218,7 @@ python-versions = ">=3.6"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "26092ea5a3f59be34c3e21771dd105866ff11f69789b6287d95a230671034a2b"
+content-hash = "327722354091af1dbf3712b1673fc07f68c0e4d4293aac7c8c9733069d1503c8"
 
 [metadata.files]
 appdirs = [
@@ -301,7 +301,7 @@ pypiwin32 = [
     {file = "pypiwin32-223.tar.gz", hash = "sha256:71be40c1fbd28594214ecaecb58e7aa8b708eabfa0125c8a109ebd51edbd776a"},
 ]
 python-telegram = [
-    {file = "python-telegram-0.14.0.tar.gz", hash = "sha256:d3b08469ed06f6599ac4acfe89c697f3c99b55dec476c475c237f6decf238376"},
+    {file = "python-telegram-0.15.0.tar.gz", hash = "sha256:35ad8d22256061ec4a6c4aa3379f217e4831c057424cbed9ec3dd61212f8c170"},
 ]
 pywin32 = [
     {file = "pywin32-302-cp310-cp310-win32.whl", hash = "sha256:251b7a9367355ccd1a4cd69cd8dd24bd57b29ad83edb2957cfa30f7ed9941efa"},

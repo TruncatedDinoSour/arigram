@@ -23,5 +23,5 @@ setup(
     packages=["arigram"],
     entry_points={"console_scripts": ["arigram = arigram.__main__:main"]},
     python_requires=">=3.8",
-    install_requires=["python-telegram==0.14.0", "pyfzf==0.2.2"],
+    install_requires=["python-telegram>=0.15.0", "pyfzf>=0.2.2"],
 )

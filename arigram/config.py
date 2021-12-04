@@ -16,6 +16,7 @@ _global_mailcap = mailcap.getcaps()
 CONFIG_DIR = os.path.expanduser("~/.config/arigram/")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.py")
 FILES_DIR = os.path.expanduser("~/.cache/arigram/")
+DRAFTS_FILE = os.path.join(FILES_DIR, "drafts.json")
 MAILCAP_FILE: Optional[str] = None
 
 LOG_LEVEL = "INFO"

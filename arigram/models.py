@@ -282,7 +282,7 @@ class Model:
         return {
             chat["title"]: f"{basic_info['member_count']} members",
             "Info": chat_info["description"],
-            "Share link": chat_info["invite_link"],
+            #"Share link": chat_info["invite_link"],
         }
 
     def get_supergroup_info(self, chat: Dict[str, Any]) -> Dict[str, Any]:
@@ -291,10 +291,11 @@ class Model:
         )
         result.wait()
         chat_info = result.update
+        log.exception(str(chat_info))
         return {
             chat["title"]: f"{chat_info['member_count']} members",
             "Info": chat_info["description"],
-            "Share link": chat_info["invite_link"],
+            #"Share link": chat_info["invite_link"],
         }
 
     def get_channel_info(self, chat: Dict[str, Any]) -> Dict[str, Any]:
@@ -306,7 +307,7 @@ class Model:
         return {
             chat["title"]: "subscribers",
             "Info": chat_info["description"],
-            "Share link": chat_info["invite_link"],
+            #"Share link": chat_info["invite_link"],
         }
 
     def get_secret_chat_info(self, chat: Dict[str, Any]) -> Dict[str, Any]:

@@ -21,6 +21,13 @@ case $ARG in
         gh pr create -f
         ;;
 
+    push)
+        git diff > /tmp/arigram.diff
+        git add -A
+        git commit -S
+        git push -u origin main
+        ;;
+
     release)
         CURRENT_VERSION=$(cat arigram/__init__.py | grep version | cut -d '"' -f 2)
         echo Current version $CURRENT_VERSION

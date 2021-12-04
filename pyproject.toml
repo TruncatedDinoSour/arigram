@@ -13,6 +13,7 @@ repository = "https://github.com/TruncatedDinosour/arigram"
 python = "^3.8"
 python-telegram = "^0.15.0^"
 pyfzf = "^0.2.2"
+pyperclip = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 black = "20.8b1"

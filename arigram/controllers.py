@@ -2,6 +2,8 @@ import logging
 import os
 import random
 import shlex
+import json
+import pyperclip
 import webbrowser
 from datetime import datetime
 from functools import partial, wraps
@@ -332,6 +334,44 @@ class Controller:
                     self.present_info("Message sent")
                 else:
                     self.present_info("Message wasn't sent")
+
+    @bind(msg_handler, ["g"])
+    def load_draft_message(self) -> None:
+        chat_id = self.model.chats.id_by_index(self.model.current_chat)
+        schat_id = str(chat_id)
+        if not self.can_send_msg() or chat_id is None:
+            self.present_info("Can't send msg in this chat")
+            return
+        elif not os.path.exists(config.DRAFTS_FILE):
+            self.present_info("You have no drafts")
+            return
+
+        with open(config.DRAFTS_FILE, "r") as f:
+            try:
+                drafts_json = json.load(f)
+            except json.decoder.JSONDecodeError:
+                self.present_error("Drafts file corrupted: restoring")
+
+                with open(config.DRAFTS_FILE, "w") as f:
+                    f.write("{}")
+
+                return
+
+        if not drafts_json.get(schat_id):
+            self.present_info("No drafts found")
+            return
+
+        draft = pyfzf.FzfPrompt().prompt(drafts_json[schat_id])[0]
+        drafts_json[schat_id].remove(draft)
+
+        log.exception(str(drafts_json))
+
+        pyperclip.copy(draft)
+        # TODO: auto-insert draft
+        self.present_info("Draft copies to clipboard")
+
+        with open(config.DRAFTS_FILE, "w") as f:
+            json.dump(drafts_json, f)
 
     @bind(msg_handler, ["a", "i"])
     def write_short_msg(self) -> None:
@@ -949,7 +989,7 @@ class Controller:
             return
 
         user = self.model.users.get_user(msg.sender_id)
-        name = f"{user['first_name']} {user['last_name']}"
+        name = f"{user.get('first_name')} {user.get('last_name')}"
 
         if text := msg.text_content if msg.is_text else msg.content_type:
             notify(text, title=name)

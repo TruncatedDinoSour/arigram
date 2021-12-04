@@ -23,7 +23,7 @@ A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI c
 - [x] better default file picker
 - [x] custom keybindings
 - [x] consistent styling
-- [ ] drafts
+- [x] drafts
 - [ ] scheduled messages
 - [ ] local passwords
 - [ ] debug mode
@@ -32,6 +32,7 @@ A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI c
 - [ ] less crowded UI
 - [ ] search (for users)
 - [ ] bots (bot keyboard)
+- [ ] profile pictures
 
 
 ## Requirements

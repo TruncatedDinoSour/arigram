@@ -1,13 +1,13 @@
+import json
 import logging
 import os
-import json
 from functools import wraps
 from typing import Any, Callable, Dict
 
 from arigram import config, utils
+from arigram.config import DRAFTS_FILE
 from arigram.controllers import Controller
 from arigram.msg import MsgProxy
-from arigram.config import DRAFTS_FILE
 
 log = logging.getLogger(__name__)
 
@@ -194,9 +194,10 @@ def update_chat_draft_message(
 ) -> None:
     chat_id = update["chat_id"]
     # FIXME: ignoring draft message itself for now because UI can't show it
-    draft_message = update["draft_message"]["input_message_text"]["text"]["text"]
+    draft_message = update["draft_message"]["input_message_text"]["text"][
+        "text"
+    ]
     order = update["positions"][0]["order"]
-
 
     if not os.path.exists(DRAFTS_FILE):
         with open(DRAFTS_FILE, "w") as nf:
@@ -211,7 +212,6 @@ def update_chat_draft_message(
 
         with open(DRAFTS_FILE, "w") as wdf:
             json.dump(dj, wdf)
-
 
     current_chat_id = controller.model.current_chat_id
     if controller.model.chats.update_chat(chat_id, order=order):

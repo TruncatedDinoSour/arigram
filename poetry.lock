@@ -157,6 +157,14 @@ python-versions = "*"
 plumbum = "*"
 
 [[package]]
+name = "pyperclip"
+version = "1.8.2"
+description = "A cross-platform clipboard module for Python. (Only handles plain text for now.)"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pypiwin32"
 version = "223"
 description = ""
@@ -218,7 +226,7 @@ python-versions = ">=3.6"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "327722354091af1dbf3712b1673fc07f68c0e4d4293aac7c8c9733069d1503c8"
+content-hash = "061484270c70aa1136531e656408afb105e5d532473e9a642961595878ecbde9"
 
 [metadata.files]
 appdirs = [
@@ -295,6 +303,9 @@ pyflakes = [
 pyfzf = [
     {file = "pyfzf-0.2.2-py3-none-any.whl", hash = "sha256:1f324717fcae6746c05094be09b36f45412f0965b2d718c8d2352877ae20df69"},
     {file = "pyfzf-0.2.2.tar.gz", hash = "sha256:8a35234fd6b3d6abca2b9971c5b27e157cfd878ee3ee9f707ddf6373438ad541"},
+]
+pyperclip = [
+    {file = "pyperclip-1.8.2.tar.gz", hash = "sha256:105254a8b04934f0bc84e9c24eb360a591aaf6535c9def5f29d92af107a9bf57"},
 ]
 pypiwin32 = [
     {file = "pypiwin32-223-py3-none-any.whl", hash = "sha256:67adf399debc1d5d14dffc1ab5acacb800da569754fafdc576b2a039485aa775"},

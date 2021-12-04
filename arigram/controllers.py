@@ -1,9 +1,8 @@
+import json
 import logging
 import os
 import random
 import shlex
-import json
-import pyperclip
 import webbrowser
 from datetime import datetime
 from functools import partial, wraps
@@ -12,6 +11,7 @@ from tempfile import NamedTemporaryFile
 from typing import Any, Callable, Dict, List, Optional
 
 import pyfzf
+import pyperclip
 from telegram.utils import AsyncResult
 
 from arigram import config

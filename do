@@ -22,6 +22,9 @@ case $ARG in
         ;;
 
     push)
+        isort arigram/*.py
+        black arigram
+
         python3 -m poetry check
         python3 -m poetry lock
         git diff > /tmp/arigram.diff

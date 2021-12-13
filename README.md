@@ -25,14 +25,17 @@ A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI c
 - [x] consistent styling
 - [x] drafts
 - [ ] scheduled messages
-- [ ] local passwords
-- [ ] debug mode
+- [ ] polls
+- [ ] local passwords (maybe GPG?)
+- [x] debug mode
 - [ ] modules/addons
 - [ ] stickers (sticker keyboard)
 - [ ] less crowded UI
 - [ ] search (for users)
 - [ ] bots (bot keyboard)
 - [ ] profile pictures
+- [ ] message/chat archiving
+- [ ] better error reporting
 
 
 ## Requirements
@@ -74,12 +77,24 @@ brew install arigram
 This option is recommended:
 
 ```sh
-mkdir ~/.local/src
+mkdir -p ~/.local/src
 cd ~/.local/src
 git clone https://github.com/TruncatedDinosour/arigram.git
 cd arigram
 pip install --upgrade --user -r requirements.txt
 pip install --upgrade --user .
+```
+
+And add this to `~/.bashrc` or whatever POSIX complient shell you use:
+
+```sh
+export PATH="${PATH}:${HOME}/.local/bin"
+```
+
+To Launch it
+
+```sh
+arigram
 ```
 
 ## Upgrading
@@ -100,18 +115,6 @@ git reset --hard  # This discards every change you made
 git pull
 pip install --upgrade --user -r requirements.txt
 pip install --upgrade --user .
-```
-
-And add this to `~/.bashrc` or whatever POSIX complient shell you use:
-
-```sh
-export PATH="${PATH}:${HOME}/.local/bin"
-```
-
-To Launch it
-
-```sh
-arigram
 ```
 
 ## Configuration
@@ -268,6 +271,9 @@ TRUNCATE_LIMIT = 10
 # If you set this to True this will automatically disable link previews
 # WARNING: only do this if you know what you are doing, this is a dangerous option
 EXTRA_TDLIB_HEADERS = {"disable_web_page_preview": True}
+
+# Where to store your drafts
+DRAFTS_FILE = "/tmp/.drafts.json"
 ```
 
 ### Mailcap file

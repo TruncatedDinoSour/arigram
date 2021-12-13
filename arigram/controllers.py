@@ -361,14 +361,13 @@ class Controller:
             self.present_info("No drafts found")
             return
 
-        draft = pyfzf.FzfPrompt().prompt(drafts_json[schat_id])[0]
-        drafts_json[schat_id].remove(draft)
-
-        log.exception(str(drafts_json))
+        with suspend(self.view):
+            draft = pyfzf.FzfPrompt().prompt(drafts_json[schat_id])[0]
+            drafts_json[schat_id].remove(draft)
 
         pyperclip.copy(draft)
         # TODO: auto-insert draft
-        self.present_info("Draft copies to clipboard")
+        self.present_info("Draft copied to clipboard")
 
         with open(config.DRAFTS_FILE, "w") as f:
             json.dump(drafts_json, f)
@@ -1023,9 +1022,9 @@ class Controller:
                 try:
                     fn(self, *args)
                 except Exception as e:
-                    self.present_error(
-                        f"{function_name}(): {e.__class__.__name__}: {e}"
-                    )
+                    msg = f"{function_name}(): {e.__class__.__name__}: {e}"
+                    log.exception(msg)
+                    self.present_error(msg)
 
             log.info(
                 f"{function_name}  =  {function.__name__}() (repeat = {repeat}, remap = {remap}) -->  {binding}"

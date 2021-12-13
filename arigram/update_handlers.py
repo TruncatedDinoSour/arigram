@@ -199,6 +199,9 @@ def update_chat_draft_message(
     ]
     order = update["positions"][0]["order"]
 
+    if not draft_message:
+        return
+
     if not os.path.exists(DRAFTS_FILE):
         with open(DRAFTS_FILE, "w") as nf:
             nf.write("{}")

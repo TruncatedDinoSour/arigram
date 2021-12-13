@@ -22,10 +22,20 @@ case $ARG in
         ;;
 
     push)
+        python3 -m poetry check
+        python3 -m poetry lock
         git diff > /tmp/arigram.diff
         git add -A
         git commit -S
         git push -u origin main
+        ;;
+
+    local)
+        python3 -m poetry check
+        python3 -m poetry lock
+        python3 -m poetry install
+
+        python3 -m pip install --user --upgrade .
         ;;
 
     release)
@@ -75,7 +85,7 @@ case $ARG in
 
     check)
         black .
-        isort arigran/*.py
+        isort arigram/*.py
         sh check.sh
         ;;
 

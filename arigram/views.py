@@ -169,7 +169,7 @@ class StatusView:
             curses.cbreak()
             curses.noecho()
 
-        return buff
+        return buff.encode("raw_unicode_escape").decode("unicode_escape")
 
 
 class ChatView:

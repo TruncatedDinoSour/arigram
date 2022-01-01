@@ -5,19 +5,20 @@ from telegram.client import AsyncResult, Telegram
 
 
 class ChatAction(Enum):
-    chatActionTyping = "typing"
+    chatActionTyping = "is typing"
     chatActionCancel = "cancel"
-    chatActionRecordingVideo = "recording video"
-    chatActionUploadingVideo = "uploading video"
-    chatActionRecordingVoiceNote = "recording voice"
-    chatActionUploadingVoiceNote = "uploading voice"
-    chatActionUploadingPhoto = "uploading photo"
-    chatActionUploadingDocument = "uploading document"
-    chatActionChoosingLocation = "choosing location"
-    chatActionChoosingContact = "choosing contact"
-    chatActionStartPlayingGame = "start playing game"
-    chatActionRecordingVideoNote = "recording video"
-    chatActionUploadingVideoNote = "uploading video"
+    chatActionRecordingVideo = "is recording a video"
+    chatActionUploadingVideo = "is uploading a video"
+    chatActionRecordingVoiceNote = "is recording a voice message"
+    chatActionUploadingVoiceNote = "is uploading a voice message"
+    chatActionUploadingPhoto = "is uploading a photo"
+    chatActionUploadingDocument = "is uploading a document"
+    chatActionChoosingLocation = "is choosing a location"
+    chatActionChoosingContact = "is choosing a contact"
+    chatActionStartPlayingGame = "started playing a game"
+    chatActionRecordingVideoNote = "is recording a video"
+    chatActionUploadingVideoNote = "is uploading a video"
+    chatActionChoosingSticker = "is choosing a sticker"
 
 
 class ChatType(Enum):

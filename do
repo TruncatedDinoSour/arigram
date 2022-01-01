@@ -1,35 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
+set -xe
 
-SRC=$(dirname $0)
+main() {
+    SRC="$(dirname "$0")"
+    cd "$SRC"
 
-cd $SRC
+    ARG=${1:-""}
 
-ARG=${1:-""}
-
-
-case $ARG in
-    build)
-        python3 -m pip install --upgrade setuptools wheel
-        python3 setup.py sdist bdist_wheel
-        python3 -m pip install --upgrade twine
-        python3 -m twine upload --repository testpypi dist/*
-        ;;
-
+    case $ARG in
     review)
         gh pr create -f
         ;;
 
     push)
         isort arigram/*.py
-        black arigram
+        black .
 
         python3 -m poetry check
         python3 -m poetry lock
-        git diff > /tmp/arigram.diff
+
+        $0 check
+        $0 local
+
+        git diff >/tmp/arigram.diff
         git add -A
-        git commit -S
+        git commit -sa
         git push -u origin main
         ;;
 
@@ -41,58 +37,23 @@ case $ARG in
         python3 -m pip install --user --upgrade .
         ;;
 
-    release)
-        CURRENT_VERSION=$(cat arigram/__init__.py | grep version | cut -d '"' -f 2)
-        echo Current version $CURRENT_VERSION
-
-        NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1 "." $2+1 "." $3}')
-        echo New version $NEW_VERSION
-        sed -i '' "s|$CURRENT_VERSION|$NEW_VERSION|g" arigram/__init__.py
-        poetry version $NEW_VERSION
-
-        git add -u arigram/__init__.py pyproject.toml
-        git commit -m "Release v$NEW_VERSION"
-        git tag v$NEW_VERSION
-
-        poetry build
-        poetry publish -u $(pass show i/pypi | grep username | cut -d ' ' -f 2 | tr -d '\n') -p $(pass show i/pypi | head -n 1 | tr -d '\n')
-        git log --pretty=format:"%cn: %s" v$CURRENT_VERSION...v$NEW_VERSION  | grep -v -e "Merge" | grep -v "Release"| awk '!x[$0]++' > changelog.md
-        git push origin master --tags
-        gh release create v$NEW_VERSION -F changelog.md
-        rm changelog.md
-        ;;
-
-    release-brew)
-        CURRENT_VERSION=$(cat arigram/__init__.py | grep version | cut -d '"' -f 2)
-        echo Current version $CURRENT_VERSION
-
-        URL="https://github.com/TruncatedDinosour/arigram/archive/refs/tags/v$CURRENT_VERSION.tar.gz"
-        echo $URL
-        wget $URL -O /tmp/arigram.tar.gz
-        HASH=$(sha256sum /tmp/arigram.tar.gz | cut -d ' ' -f 1)
-        rm /tmp/arigram.tar.gz
-
-        cd /opt/homebrew/Library/Taps/TruncatedDinosour/dino-bar
-        sed -i '' "6s|.*|  url \"https://github.com/TruncatedDinosour/arigram/archive/refs/tags/v$CURRENT_VERSION.tar.gz\"|" arigram.rb
-        sed -i '' "7s|.*|  sha256 \"$HASH\"|" arigram.rb
-
-        brew audit --new arigram
-        brew uninstall arigram || true
-        brew install arigram
-        brew test arigram
-
-        git add -u arigram.rb
-        git commit -m "Release arigram.rb v$CURRENT_VERSION"
-        git push origin master
+    upgrade)
+        git reset --hard
+        git pull
+        $0 local
         ;;
 
     check)
         black .
         isort arigram/*.py
-        sh check.sh
+        chmod a+rx ./check.sh
+        ./check.sh
         ;;
 
     *)
         python3 -m arigram
         ;;
-esac
+    esac
+}
+
+main "$@"

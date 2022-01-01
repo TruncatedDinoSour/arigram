@@ -21,6 +21,8 @@ from subprocess import CompletedProcess
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Tuple, Type
 
+from pyperclip import copy as copy_clipboard
+
 from arigram import config
 
 log = logging.getLogger(__name__)
@@ -237,9 +239,7 @@ def truncate_to_len(string: str, width: int) -> str:
 
 
 def copy_to_clipboard(text: str) -> None:
-    subprocess.run(
-        config.COPY_CMD, universal_newlines=True, input=text, shell=True
-    )
+    copy_clipboard(text)
 
 
 class suspend:
@@ -333,11 +333,11 @@ def pretty_ts(ts: int) -> str:
 
 
 @lru_cache(maxsize=256)
-def get_color_by_str(user: str) -> int:
+def get_colour_by_str(user: str) -> int:
     index = int(hashlib.sha1(user.encode()).hexdigest(), 16) % len(
-        config.USERS_COLORS
+        config.USERS_COLOURS
     )
-    return config.USERS_COLORS[index]
+    return config.USERS_COLOURS[index]
 
 
 def cleanup_cache() -> None:

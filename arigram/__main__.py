@@ -1,10 +1,12 @@
 import logging.handlers
 import signal
+import sys
 import threading
 from curses import window, wrapper  # type: ignore
 from functools import partial
 from types import FrameType
 
+import arigram
 from arigram import config, update_handlers, utils
 from arigram.controllers import Controller
 from arigram.models import Model
@@ -22,7 +24,7 @@ def run(tg: Tdlib, stdscr: window) -> None:
         del sig, frame
         log.info("Interrupt signal is handled and ignored on purpose.")
 
-    signal.signal(signal.SIGINT, interrupt_signal_handler)
+    signal.signal(signal.SIGINT, interrupt_signal_handler)  # type: ignore
 
     model = Model(tg)
     status_view = StatusView(stdscr)
@@ -46,19 +48,24 @@ def run(tg: Tdlib, stdscr: window) -> None:
 
 
 def parse_args() -> None:
-    import sys
+    """Parse CLI arguments"""
 
-    if len(sys.argv) > 1 and sys.argv[1] in ("-v", "--version"):
-        import arigram
+    if len(sys.argv) < 2:
+        return
 
+    if sys.argv[1] in ("-v", "--version"):
         print("Terminal Telegram client")
         print("Version:", arigram.__version__)
-        exit(0)
+        sys.exit()
 
 
 def main() -> None:
+    """Main function"""
+
     parse_args()
+
     utils.cleanup_cache()
+
     tg = Tdlib(
         config.EXTRA_TDLIB_HEADEARS,
         api_id=config.API_ID,

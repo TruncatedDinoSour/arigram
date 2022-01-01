@@ -6,10 +6,10 @@ from typing import Any, Dict, List, Optional, Tuple, Union, cast
 from _curses import window  # type: ignore
 
 from arigram import config
-from arigram.colors import (
+from arigram.colours import (
     bold,
     cyan,
-    get_color,
+    get_colour,
     magenta,
     reverse,
     white,
@@ -19,7 +19,7 @@ from arigram.models import Model, UserModel
 from arigram.msg import MsgProxy
 from arigram.tdlib import ChatType, get_chat_type, is_group
 from arigram.utils import (
-    get_color_by_str,
+    get_colour_by_str,
     num,
     string_len_dwc,
     truncate_to_len,
@@ -75,7 +75,7 @@ class View:
         curses.start_color()
         curses.use_default_colors()
         # init white color first to initialize colors correctly
-        get_color(white, -1)
+        get_colour(white, -1)
 
         self.stdscr = stdscr
         self.chats = chat_view
@@ -189,13 +189,13 @@ class ChatView:
         self.win.resize(self.h, self.w)
 
     def _msg_color(self, is_selected: bool = False) -> int:
-        color = get_color(white, -1)
+        color = get_colour(white, -1)
         if is_selected:
             return color | reverse
         return color
 
     def _unread_color(self, is_selected: bool = False) -> int:
-        color = get_color(magenta, -1)
+        color = get_colour(magenta, -1)
         if is_selected:
             return color | reverse
         return color
@@ -204,9 +204,9 @@ class ChatView:
         self, is_selected: bool, title: str, user: Optional[str]
     ) -> Tuple[int, ...]:
         attrs = (
-            get_color(cyan, -1),
-            get_color(get_color_by_str(title), -1),
-            get_color(get_color_by_str(user or ""), -1),
+            get_colour(cyan, -1),
+            get_colour(get_colour_by_str(title), -1),
+            get_colour(get_colour_by_str(user or ""), -1),
             self._msg_color(is_selected),
         )
         if is_selected:
@@ -222,7 +222,7 @@ class ChatView:
 
         self.win.vline(0, width, line, self.h)
         self.win.addstr(
-            0, 0, title.center(width)[:width], get_color(cyan, -1) | bold
+            0, 0, title.center(width)[:width], get_colour(cyan, -1) | bold
         )
 
         for i, chat in enumerate(chats, 1):
@@ -571,7 +571,7 @@ class MsgView:
                 column += string_len_dwc(elem)
 
         self.win.addstr(
-            0, 0, self._msg_title(chat), get_color(cyan, -1) | bold
+            0, 0, self._msg_title(chat), get_colour(cyan, -1) | bold
         )
 
         self._refresh()
@@ -604,10 +604,10 @@ class MsgView:
 
     def _msg_attributes(self, is_selected: bool, user: str) -> Tuple[int, ...]:
         attrs = (
-            get_color(cyan, -1),
-            get_color(get_color_by_str(user), -1),
-            get_color(yellow, -1),
-            get_color(white, -1),
+            get_colour(cyan, -1),
+            get_colour(get_colour_by_str(user), -1),
+            get_colour(yellow, -1),
+            get_colour(white, -1),
         )
 
         if is_selected:

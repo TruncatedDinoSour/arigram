@@ -196,7 +196,7 @@ class Controller:
     def quit(self) -> str:
         return "QUIT"
 
-    @bind(msg_handler, ["h", "^D"])
+    @bind(msg_handler, ["h"])
     def back(self) -> str:
         return "BACK"
 
@@ -276,7 +276,7 @@ class Controller:
         if self.model.jump_bottom():
             self.render_msgs()
 
-    @bind(msg_handler, ["j", "^B", "^N"], repeat_factor=True)
+    @bind(msg_handler, ["j"], repeat_factor=True)
     def next_msg(self, repeat_factor: int = 1) -> None:
         if self.model.next_msg(repeat_factor):
             self.render_msgs()
@@ -285,7 +285,7 @@ class Controller:
     def jump_10_msgs_down(self) -> None:
         self.next_msg(10)
 
-    @bind(msg_handler, ["k", "^C", "^P"], repeat_factor=True)
+    @bind(msg_handler, ["k"], repeat_factor=True)
     def prev_msg(self, repeat_factor: int = 1) -> Optional[bool]:
         if self.model.prev_msg(repeat_factor):
             self.render_msgs()
@@ -327,7 +327,7 @@ class Controller:
             f.write(insert_replied_msg(msg))
             f.seek(0)
             s.call(config.LONG_MSG_CMD.format(file_path=shlex.quote(f.name)))
-            with open(f.name) as f:
+            with open(f.name) as f:  # type: ignore
                 if replied_msg := strip_replied_msg(f.read().strip()):
                     self.model.view_all_msgs()
                     self.tg.reply_message(chat_id, reply_to_msg, replied_msg)
@@ -397,7 +397,7 @@ class Controller:
         ) as s:
             self.tg.send_chat_action(chat_id, ChatAction.chatActionTyping)
             s.call(config.LONG_MSG_CMD.format(file_path=shlex.quote(f.name)))
-            with open(f.name) as f:
+            with open(f.name) as f:  # type: ignore
                 if msg := f.read().strip():
                     self.model.send_message(text=msg)
                     self.present_info("Message sent")
@@ -442,7 +442,7 @@ class Controller:
                 else:
                     s.call(config.FILE_PICKER_CMD.format(file_path=f.name))  # type: ignore
 
-                    with open(f.name) as f:
+                    with open(f.name) as f:  # type: ignore
                         file_path = f.read().strip()
 
             with suspend(self.view) as s:
@@ -617,7 +617,7 @@ class Controller:
             )
         return self._open_msg(msg, cmd)
 
-    @bind(msg_handler, ["l", "^J"])
+    @bind(msg_handler, ["l"])
     def open_current_msg(self) -> None:
         """Open msg or file with cmd in mailcap"""
         msg = MsgProxy(self.model.current_msg)
@@ -656,7 +656,7 @@ class Controller:
             f.write(msg.text_content)
             f.flush()
             s.call(f"{config.EDITOR} {f.name}")
-            with open(f.name) as f:
+            with open(f.name) as f:  # type: ignore
                 if text := f.read().strip():
                     self.model.edit_message(text=text)
                     self.present_info("Message edited")
@@ -668,18 +668,20 @@ class Controller:
             int(cols / 2),
             max(len(user.name) for user in users),
         )
-        users_out = "\n".join(
+        users_out = [
             f"{user.id}\t{user.name:<{limit}} | {user.status}"
             for user in sorted(users, key=lambda user: user.order)
-        )
-        cmd = config.FZF + " -n 2"
-        if is_multiple:
-            cmd += " -m"
+        ]
+        fzf_flags = "-n 2"
 
-        with NamedTemporaryFile("r+") as tmp, suspend(self.view) as s:
-            s.run_with_input(f"{cmd} > {tmp.name}", users_out)
-            with open(tmp.name) as f:
-                return [int(line.split()[0]) for line in f.readlines()]
+        if is_multiple:
+            fzf_flags += " -m"
+
+        with suspend(self.view):
+            return [
+                int(uid.split()[0].strip())
+                for uid in pyfzf.FzfPrompt().prompt(users_out, fzf_flags)
+            ]
 
     @bind(chat_handler, ["ns"])
     def new_secret(self) -> None:
@@ -789,7 +791,7 @@ class Controller:
     def view_contacts(self) -> None:
         self._get_user_ids()
 
-    @bind(chat_handler, ["l", "^J", "^E"])
+    @bind(chat_handler, ["l"])
     def handle_msgs(self) -> Optional[str]:
         rc = self.handle(msg_handler, 0.2)
         if rc == "QUIT":
@@ -802,13 +804,13 @@ class Controller:
         if self.model.first_chat():
             self.render()
 
-    @bind(chat_handler, ["j", "^B", "^N"], repeat_factor=True)
+    @bind(chat_handler, ["j"], repeat_factor=True)
     @bind(msg_handler, ["]"])
     def next_chat(self, repeat_factor: int = 1) -> None:
         if self.model.next_chat(repeat_factor):
             self.render()
 
-    @bind(chat_handler, ["k", "^C", "^P"], repeat_factor=True)
+    @bind(chat_handler, ["k"], repeat_factor=True)
     @bind(msg_handler, ["["])
     def prev_chat(self, repeat_factor: int = 1) -> None:
         if self.model.prev_chat(repeat_factor):

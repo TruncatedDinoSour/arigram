@@ -1,4 +1,4 @@
-python-telegram>=0.15.0
+python-telegram==0.15.0
 pyfzf>=0.2.2
 pyperclip>=1.8.2
 

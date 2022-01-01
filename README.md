@@ -36,6 +36,7 @@ A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI c
 - [ ] profile pictures
 - [ ] message/chat archiving
 - [ ] better error reporting
+- [ ] joining of groups and channels based on t.me links and @s
 
 
 ## Requirements
@@ -81,8 +82,7 @@ mkdir -p ~/.local/src
 cd ~/.local/src
 git clone https://github.com/TruncatedDinosour/arigram.git
 cd arigram
-pip install --upgrade --user -r requirements.txt
-pip install --upgrade --user .
+./do local
 ```
 
 And add this to `~/.bashrc` or whatever POSIX complient shell you use:
@@ -111,10 +111,16 @@ This option is recommended:
 
 ```sh
 cd ~/.local/src/arigram
-git reset --hard  # This discards every change you made
+git reset --hard  # This discards every change you made locally
 git pull
-pip install --upgrade --user -r requirements.txt
-pip install --upgrade --user .
+./do upgrade
+```
+
+or if you want to keep local changes
+
+```sh
+cd ~/.local/src/arigram
+./do local
 ```
 
 ## Configuration
@@ -126,6 +132,7 @@ Config file should be stored at `~/.config/arigram/config.py`. This is simple py
 ```python
 # should start with + (plus) and contain country code
 PHONE = "[phone number in international format]"
+# For enable `PHONE = "+1234567890"`
 ```
 
 ### Advanced configuration:
@@ -301,9 +308,7 @@ text/*; vim "%s"
 
 ## Keybindings
 
-vi like keybindings are used in the project. Can be used commands like `4j` - 4 lines down.
-
-For navigation arrow keys also can be used.
+ViM like keybindings are used in the project. Can be used commands like `4j` - 4 lines down.
 
 ### Chats:
 
@@ -329,12 +334,14 @@ For navigation arrow keys also can be used.
 - `G`: move to the last msg (at the bottom)
 - `D`: download file
 - `l`: if video, pics or audio then open app specified in mailcap file, for example:
-  ```ini
-  # Images
-  image/png; qView "%s"
-  audio/*; mpv "%s"
-  ```
-  if text, open in `less` (to view multiline msgs)
+
+```ini
+# Images
+image/png; qView "%s"
+audio/*; mpv "%s"
+```
+
+If text, open in `less` (to view multiline msgs)
 - `e`: edit current msg
 - `<space>`: select msg and jump one msg down (use for deletion or forwarding)
 - `<ctrl+space>`: same as space but jumps one msg up

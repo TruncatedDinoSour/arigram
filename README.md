@@ -239,17 +239,17 @@ MSG_FLAGS = {
 # use this app to open url when there are multiple
 URL_VIEW = 'urlview'
 
-# Specifies range of colors to use for drawing users with
-# different colors
+# Specifies range of colours to use for drawing users with
+# different colours
 # this one uses base 16 colors which should look good by default
-USERS_COLORS = tuple(range(2, 16))
+USERS_COLOURS = tuple(range(2, 16))
 
-# to use 256 colors, set range appropriately
-# though 233 looks better, because last colors are black and gray
-# USERS_COLORS = tuple(range(233))
+# to use 256 colours, set range appropriately
+# though 233 looks better, because last colours are black and gray
+# USERS_COLOURS = tuple(range(233))
 
-# to make one color for all users
-# USERS_COLORS = (4,)
+# to make one colour for all users
+# USERS_COLOURS = (4,)
 
 # cleanup cache
 # Values: N days, None (never)

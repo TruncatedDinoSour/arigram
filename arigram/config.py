@@ -80,6 +80,8 @@ CUSTOM_KEYBINDS: Dict[str, Dict[str, Any]] = {}
 
 TRUNCATE_LIMIT: int = 15
 
+DECODE_INPUT_ESCAPES: bool = True
+
 EXTRA_TDLIB_HEADEARS: Dict[Any, Any] = {}
 
 if os.path.isfile(CONFIG_FILE):

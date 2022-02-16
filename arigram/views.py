@@ -1,6 +1,7 @@
 import curses
 import logging
 from datetime import datetime
+from tempfile import TemporaryFile
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from _curses import window  # type: ignore
@@ -20,8 +21,10 @@ from arigram.msg import MsgProxy
 from arigram.tdlib import ChatType, get_chat_type, is_group
 from arigram.utils import (
     get_colour_by_str,
+    is_yes,
     num,
     string_len_dwc,
+    suspend,
     truncate_to_len,
 )
 
@@ -169,7 +172,12 @@ class StatusView:
             curses.cbreak()
             curses.noecho()
 
-        return buff.encode("raw_unicode_escape").decode("unicode_escape")
+        if config.DECODE_INPUT_ESCAPES:
+            buff = buff.encode("raw_unicode_escape", errors="ignore").decode(
+                "unicode_escape", errors="ignore"
+            )
+
+        return buff
 
 
 class ChatView:

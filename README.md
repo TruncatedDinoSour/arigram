@@ -85,6 +85,12 @@ cd arigram
 ./do local
 ```
 
+#### Optionally install the desktop entry
+
+```sh
+$ sudo ./do entry
+```
+
 And add this to `~/.bashrc` or whatever POSIX complient shell you use:
 
 ```sh
@@ -281,6 +287,11 @@ EXTRA_TDLIB_HEADERS = {"disable_web_page_preview": True}
 
 # Where to store your drafts
 DRAFTS_FILE = "/tmp/.drafts.json"
+
+# This defines if stuff like \n (Unicode escapes)
+# get interpreted literally (False) or get decoded
+# into an escape and you get a newline (True)
+DECODE_INPUT_ESCAPES = False
 ```
 
 ### Mailcap file

@@ -1,0 +1,4 @@
+- add a newline after every message except if it's from the same user
+- implement [messageAnimatedEmoji]
+- implement spoilers
+

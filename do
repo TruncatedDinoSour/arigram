@@ -30,10 +30,6 @@ main() {
         ;;
 
     local)
-        python3 -m poetry check
-        python3 -m poetry lock
-        python3 -m poetry install
-
         python3 -m pip install --user --upgrade .
         ;;
 
@@ -46,8 +42,13 @@ main() {
     check)
         black .
         isort arigram/*.py
-        chmod a+rx ./check.sh
+        chmod u+rx ./check.sh
         ./check.sh
+        ;;
+
+    entry)
+        mkdir -p /usr/share/applications
+        cp arigram.desktop /usr/share/applications
         ;;
 
     *)

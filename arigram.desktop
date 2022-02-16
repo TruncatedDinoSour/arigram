@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.1
+Name=Arigram
+Comment=A fork of tg -- a hackable telegram TUI client
+TryExec=arigram
+Exec=arigram
+Icon=arigram
+Terminal=true
+StartupWMClass=Arigram
+Type=Application
+Categories=Chat;Network;InstantMessaging;
+MimeType=x-scheme-handler/tg;
+Keywords=tg;chat;im;messaging;messenger;sms;arigram;

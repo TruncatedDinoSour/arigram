@@ -200,7 +200,7 @@ LOG_PATH = os.path.expanduser("~/.local/share/tg/")
 
 # If you have problems with tdlib shipped with the client, you can install and
 # use your own, for example:
-TDLIB_PATH = "/usr/local/Cellar/tdlib/1.6.0/lib/libtdjson.dylib"
+TDLIB_PATH = "/usr/local/Cellar/tdlib/1.8.0/lib/libtdjson.dylib"
 
 # A callback to notify a user,
 # Arguments get passed in kwargs

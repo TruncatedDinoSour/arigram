@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "arigram"
-version = "0.1.1"
+version = "0.2.0"
 description = "A fork of tg -- a hackable telegram TUI client"
 authors = ["TruncatedDinosour <truncateddinosour@gmail.com>"]
 license = "Unlicense"

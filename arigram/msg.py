@@ -63,6 +63,9 @@ class MsgProxy:
     def __setitem__(self, key: str, value: Any) -> None:
         self.msg[key] = value
 
+    def get(self, key: str) -> Any:
+        return self[key]
+
     @property
     def type(self) -> Optional[str]:
         return self.msg.get("@type")
@@ -220,9 +223,12 @@ class MsgProxy:
 
     @property
     def sender_id(self) -> int:
-        return self.msg["sender"].get("user_id") or self.msg["sender"].get(
-            "chat_id"
-        )
+        msg = self.msg.get("sender_id") or self.msg.get("sender")
+
+        if msg is None:
+            raise ValueError(f"No ID found for {msg}")
+
+        return msg.get("user_id") or msg.get("chat_id")
 
     @property
     def forward(self) -> Optional[Dict[str, Any]]:

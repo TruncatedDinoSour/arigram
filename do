@@ -42,13 +42,8 @@ main() {
     check)
         black .
         isort arigram/*.py
-        chmod u+rx ./check.sh
+        chmod a+rx ./check.sh
         ./check.sh
-        ;;
-
-    entry)
-        mkdir -p /usr/share/applications
-        cp arigram.desktop /usr/share/applications
         ;;
 
     *)

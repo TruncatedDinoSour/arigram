@@ -983,9 +983,14 @@ class Controller:
             # chat not found, do not notify
             return
 
+        sender = msg.get("sender_id") or msg.get("sender")
+
+        if sender is None:
+            raise ValueError("Cannot get mute settings for non-existant ID")
+
         # TODO: handle cases when all chats muted on global level
         if chat["notification_settings"]["mute_for"] or self.model.is_me(
-            msg["sender"].get("user_id")
+            sender.get("user_id")
         ):
             return
 

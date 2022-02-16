@@ -3,7 +3,7 @@
 set -ex
 
 echo Checking and formatting with black...
-black --check .
+black --check arigram/
 
 echo Python type checking...
 mypy arigram --warn-redundant-casts --warn-unused-ignores \

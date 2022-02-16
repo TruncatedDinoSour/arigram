@@ -30,8 +30,6 @@ main() {
         ;;
 
     local)
-        python3 -m poetry check
-        python3 -m poetry lock
         python3 -m poetry install
 
         python3 -m pip install --user --upgrade .

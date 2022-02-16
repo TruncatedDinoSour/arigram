@@ -280,7 +280,7 @@ class ChatView:
         msg = chat.get("last_message")
         if (
             msg
-            and self.model.is_me(msg["sender"].get("user_id"))
+            and self.model.is_me((msg.get("sender_id") or msg.get("sender")).get("user_id"))
             and msg["id"] > chat["last_read_outbox_message_id"]
             and not self.model.is_me(chat["id"])
         ):
@@ -288,7 +288,7 @@ class ChatView:
             flags.append("unseen")
         elif (
             msg
-            and self.model.is_me(msg["sender"].get("user_id"))
+            and self.model.is_me((msg.get("sender_id") or msg.get("sender")).get("user_id"))
             and msg["id"] <= chat["last_read_outbox_message_id"]
         ):
             flags.append("seen")
@@ -628,7 +628,7 @@ def get_last_msg(
     if not last_msg:
         return None, "<No messages yet>"
     return (
-        last_msg["sender"].get("user_id"),
+        (last_msg.get("sender_id") or last_msg.get("sender")).get("user_id"),
         parse_content(MsgProxy(last_msg), users),
     )
 

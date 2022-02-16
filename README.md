@@ -55,7 +55,8 @@ To use tg, you'll need to have the following installed:
   ```sh
   brew install tdlib
   ```
-  and then set in config `TDLIB_PATH`
+  and then set in config `TDLIB_PATH`.
+- macOS arm64: you can also manually put the tdlib prebuilt (tdlib-arm64-prebuilts/libtdjson.dylib) in `/usr/local/lib`.
 - `urlview` to choose urls when there is multiple in message, use `URL_VIEW` in config file to use another app (it should accept urls in stdin)
 - to open `stickers` and `animated` ones (thumbnail preview) you need to set in mailcap appropriate handler and have app which will open `webp` file:
   ```ini
@@ -200,7 +201,7 @@ LOG_PATH = os.path.expanduser("~/.local/share/tg/")
 
 # If you have problems with tdlib shipped with the client, you can install and
 # use your own, for example:
-TDLIB_PATH = "/usr/local/Cellar/tdlib/1.6.0/lib/libtdjson.dylib"
+TDLIB_PATH = "/usr/local/Cellar/tdlib/1.8.0/lib/libtdjson.dylib"
 
 # A callback to notify a user,
 # Arguments get passed in kwargs

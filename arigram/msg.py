@@ -64,7 +64,10 @@ class MsgProxy:
         self.msg[key] = value
 
     def get(self, key: str) -> Any:
-        return self[key]
+        try:
+            return self[key]
+        except KeyError:
+            return None
 
     @property
     def type(self) -> Optional[str]:

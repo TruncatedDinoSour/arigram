@@ -9,13 +9,9 @@ main() {
     ARG=${1:-""}
 
     case $ARG in
-    review)
-        gh pr create -f
-        ;;
-
     push)
         isort arigram/*.py
-        black .
+        black arigram/
 
         python3 -m poetry check
         python3 -m poetry lock
@@ -40,10 +36,15 @@ main() {
         ;;
 
     check)
-        black .
+        black arigram/
         isort arigram/*.py
-        chmod a+rx ./check.sh
+        chmod u+rx ./check.sh
         ./check.sh
+        ;;
+
+    entry)
+        mkdir -p /usr/share/applications
+        cp -i arigram.desktop /usr/share/applications
         ;;
 
     *)

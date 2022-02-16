@@ -985,7 +985,7 @@ class Controller:
 
         # TODO: handle cases when all chats muted on global level
         if chat["notification_settings"]["mute_for"] or self.model.is_me(
-            (last_msg.get("sender_id") or last_msg.get("sender")).get("user_id")
+            (msg.get("sender_id") or msg.get("sender")).get("user_id")
         ):
             return
 

@@ -170,8 +170,10 @@ class StatusView:
             curses.noecho()
 
         if config.DECODE_INPUT_ESCAPES:
-            buff = buff.encode("raw_unicode_escape", errors="ignore").decode(
-                "unicode_escape", errors="ignore"
+            buff = (
+                buff.replace(r"\\", r"\\\\")
+                .encode("raw_unicode_escape", errors="ignore")
+                .decode("unicode_escape", errors="ignore")
             )
 
         return buff

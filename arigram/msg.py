@@ -92,8 +92,7 @@ class MsgProxy:
 
     @property
     def human_size(self) -> Optional[str]:
-        if self.size:
-            return utils.humanize_size(self.size)
+        return utils.humanize_size(self.size) if self.size else None
 
     @property
     def duration(self) -> Optional[str]:

@@ -225,24 +225,42 @@ class Model:
         self.copied_msgs = (0, [])
         return True
 
-    def copy_msgs_text(self) -> bool:
-        """Copies current msg text or path to file if it's file"""
+    def get_current_message_text(self) -> tuple[str, bool]:
         buffer = []
 
         from_chat_id, msg_ids = self.copied_msgs
         if not msg_ids:
-            return False
+            return "", False
         for msg_id in msg_ids:
             _msg = self.msgs.get_message(from_chat_id, msg_id)
             if not _msg:
-                return False
+                return "", False
             msg = MsgProxy(_msg)
             if msg.file_id and msg.local_path:
                 buffer.append(msg.local_path)
             elif msg.is_text:
                 buffer.append(msg.text_content)
-        copy_to_clipboard("\n".join(buffer))
-        return True
+        return "\n".join(buffer), True
+
+    def copy_msgs_text(self) -> bool:
+        """Copies current msg text or path to file if it's file"""
+
+        chat_id = self.chats.id_by_index(self.current_chat)
+        if not chat_id:
+            return False
+
+        msg_ids = self.selected[chat_id]
+        if not msg_ids:
+            msg = self.current_msg
+            msg_ids = [msg["id"]]
+
+        self.copied_msgs = (chat_id, msg_ids)
+
+        if (c_msg := self.get_current_message_text())[1]:
+            copy_to_clipboard(c_msg[0])
+            return True
+
+        return False
 
     def copy_files(
         self, chat_id: int, msg_ids: List[int], dest_dir: str

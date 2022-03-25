@@ -225,7 +225,7 @@ class Model:
         self.copied_msgs = (0, [])
         return True
 
-    def get_current_message_text(self) -> tuple[str, bool]:
+    def get_current_message_text(self) -> Tuple[str, bool]:
         buffer = []
 
         from_chat_id, msg_ids = self.copied_msgs

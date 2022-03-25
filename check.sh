@@ -12,7 +12,8 @@ mypy arigram --warn-redundant-casts --warn-unused-ignores \
     --disallow-untyped-calls --disallow-untyped-defs \
     --disallow-incomplete-defs --check-untyped-defs \
     --disallow-untyped-decorators --pretty --show-traceback \
-    --no-warn-unused-ignores --follow-imports=error --namespace-packages
+    --no-warn-unused-ignores --follow-imports=error --namespace-packages \
+    --python-version "$(head -n1 runtime.txt)"
 
 echo Checking import sorting...
 isort -c arigram/*.py

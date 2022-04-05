@@ -26,7 +26,7 @@ from pyperclip import copy as copy_clipboard
 from arigram import config
 
 log = logging.getLogger(__name__)
-units = {"B": 1, "KB": 10 ** 3, "MB": 10 ** 6, "GB": 10 ** 9, "TB": 10 ** 12}
+units = {"B": 1, "KB": 10**3, "MB": 10**6, "GB": 10**9, "TB": 10**12}
 
 
 class LogWriter:

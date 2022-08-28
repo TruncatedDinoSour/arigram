@@ -1,5 +1,9 @@
 # Arigram
 
+> This is not an actively-developed project as of now, meaning don't
+> expect much stuff now, I might start working on it again, although it
+> works for me so I use it, anyways, I'm rlly sorry, kthxbye :)
+
 A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI client
 
 ![arigram screenshot](arigram-screenshot.png)

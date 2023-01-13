@@ -664,24 +664,25 @@ def parse_content(msg: MsgProxy, users: UserModel) -> str:
     content = msg["content"]
     _type = content["@type"]
 
-    if _type == "messageBasicGroupChatCreate":
-        return f"[created the group \"{content['title']}\"]"
-    if _type == "messageChatAddMembers":
-        user_ids = content["member_user_ids"]
-        if user_ids[0] == msg.sender_id:
-            return "[joined the group]"
-        users_name = ", ".join(
-            users.get_user_label(user_id) for user_id in user_ids
-        )
-        return f"[added {users_name}]"
-    if _type == "messageChatDeleteMember":
-        user_id = content["user_id"]
-        if user_id == msg.sender_id:
-            return "[left the group]"
-        user_name = users.get_user_label(user_id)
-        return f"[removed {user_name}]"
-    if _type == "messageChatChangeTitle":
-        return f"[changed the group name to \"{content['title']}\"]"
+    match _type:
+        case "messageBasicGroupChatCreate":
+            return f"[created the group \"{content['title']}\"]"
+        case "messageChatAddMembers":
+            user_ids = content["member_user_ids"]
+            if user_ids[0] == msg.sender_id:
+                return "[joined the group]"
+            users_name = ", ".join(
+                users.get_user_label(user_id) for user_id in user_ids
+            )
+            return f"[added {users_name}]"
+        case "messageChatDeleteMember":
+            user_id = content["user_id"]
+            if user_id == msg.sender_id:
+                return "[left the group]"
+            user_name = users.get_user_label(user_id)
+            return f"[removed {user_name}]"
+        case "messageChatChangeTitle":
+            return f"[changed the group name to \"{content['title']}\"]"
 
     if not msg.content_type:
         # not implemented

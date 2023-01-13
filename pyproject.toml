@@ -4,7 +4,6 @@ version = "0.1.1"
 description = "A fork of tg -- a hackable telegram TUI client"
 authors = ["TruncatedDinosour <truncateddinosour@gmail.com>"]
 license = "Unlicense"
-packages = [{ include = "arigram"}]
 readme = "README.md"
 homepage = "https://github.com/TruncatedDinosour/arigram"
 repository = "https://github.com/TruncatedDinosour/arigram"

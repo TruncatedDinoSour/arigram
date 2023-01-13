@@ -20,6 +20,10 @@ class MsgProxy:
         "messageSticker": ("sticker", "thumbnail", "photo"),
         "messagePoll": (),
         "messageAnimation": ("animation", "animation"),
+        "messageAnimatedEmoji": (
+            "animated_emoji",
+            "sticker",
+        ),
     }
 
     types = {
@@ -33,6 +37,7 @@ class MsgProxy:
         "messageSticker": "sticker",
         "messagePoll": "poll",
         "messageAnimation": "animation",
+        "messageAnimatedEmoji": "animated_emoji",
     }
 
     @classmethod
@@ -43,15 +48,19 @@ class MsgProxy:
         if fields is None:
             log.error("msg type not supported: %s", _type)
             return {}
+
         for field in fields[:deep]:
             if isinstance(field, int):
                 doc = doc[field]
             else:
                 doc = doc.get(field)
-            if "file" in doc:
-                return doc["file"]
+
             if doc is None:
                 return {}
+
+            if "file" in doc:
+                return doc["file"]
+
         return doc
 
     def __init__(self, msg: Dict[str, Any]) -> None:
@@ -245,12 +254,26 @@ class MsgProxy:
 
     @property
     def sticker_emoji(self) -> Optional[str]:
-        if self.content_type != "sticker":
+        if self.content_type not in (
+            "sticker",
+            "animated_emoji",
+        ):
             return None
-        return self.msg["content"].get("sticker", {}).get("emoji")
+
+        content = self.msg["content"].get(self.content_type, {})
+
+        return content.get("emoji") or content.get("sticker", {}).get("emoji")
 
     @property
     def is_animated(self) -> Optional[bool]:
-        if self.content_type != "sticker":
+        if self.content_type not in (
+            "sticker",
+            "animated_emoji",
+        ):
             return None
-        return self.msg["content"].get("sticker", {}).get("is_animated")
+
+        content = self.msg["content"].get(self.content_type, {})
+
+        return content.get("is_animated") or content.get("sticker", {}).get(
+            "is_animated"
+        )

@@ -1,0 +1,60 @@
+[[package]]
+name = "plumbum"
+version = "1.8.1"
+description = "Plumbum: shell combinators library"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+platform = "*"
+
+[package.dependencies]
+pywin32 = "*"
+[[package]]
+name = "pyfzf"
+version = "0.2.2"
+description = "Python wrapper for junegunn's fuzzyfinder (fzf)"
+category = "main"
+optional = false
+python-versions = "*"
+platform = "*"
+
+[package.dependencies]
+plumbum = "*"
+[[package]]
+name = "pyperclip"
+version = "1.8.2"
+description = "A cross-platform clipboard module for Python. (Only handles plain text for now.)"
+category = "main"
+optional = false
+python-versions = "*"
+platform = "*"
+
+[[package]]
+name = "python-telegram"
+version = "0.16.0"
+description = "Python library to help you build your own Telegram clients"
+category = "main"
+optional = false
+python-versions = "*"
+platform = "*"
+
+[[package]]
+name = "pywin32"
+version = "305"
+description = "Python for Window Extensions"
+category = "main"
+optional = false
+python-versions = "*"
+platform = "*"
+
+[metadata]
+python-versions = "^3.8"
+platform = "*"
+content-hash = "4f2ac0aba112ff67dd5449d3884bc07978ea2bd242184751ace939417128f419"
+
+[metadata.hashes]
+plumbum = []
+pyfzf = []
+pyperclip = []
+python-telegram = []
+pywin32 = []

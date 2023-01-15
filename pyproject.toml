@@ -10,15 +10,9 @@ repository = "https://github.com/TruncatedDinosour/arigram"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-python-telegram = "^0.15.0"
+python-telegram = "^0.16.0"
 pyfzf = "^0.2.2"
 pyperclip = "^1.8.2"
-
-[tool.poetry.dev-dependencies]
-black = "^20.8b1"
-flake8 = "^3.8.4"
-isort = "^5.6.2"
-mypy = "^0.812"
 
 [tool.poetry.scripts]
 arigram = "arigram.__main__:main"

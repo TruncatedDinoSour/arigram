@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "arigram"
-version = "0.1.5"
+version = "0.1.6"
 description = "A fork of tg -- a hackable telegram TUI client"
 authors = ["TruncatedDinosour <ari.web.xyz@gmail.com>"]
 license = "Unlicense"
@@ -9,7 +9,7 @@ homepage = "https://github.com/TruncatedDinosour/arigram"
 repository = "https://github.com/TruncatedDinosour/arigram"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 python-telegram = "^0.16.0"
 pyfzf = "^0.2.2"
 pyperclip = "^1.8.2"

@@ -48,9 +48,9 @@ python-versions = "*"
 platform = "*"
 
 [metadata]
-python-versions = "^3.8"
+python-versions = "^3.10"
 platform = "*"
-content-hash = "4f2ac0aba112ff67dd5449d3884bc07978ea2bd242184751ace939417128f419"
+content-hash = "47c151f1c93602a42bc61a002082418be9f13a130d20a96a41080b177327b229"
 
 [metadata.hashes]
 plumbum = []

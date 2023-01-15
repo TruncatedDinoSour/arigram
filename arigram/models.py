@@ -286,7 +286,7 @@ class Model:
             chat["title"]: status,
             "Username": user.get("username", ""),
             "Phone": user.get("phone_number", ""),
-            "Bio": user_info.get("bio", ""),
+            "Bio": user_info.get("bio", {"text": ""})["text"],
         }
 
     def get_basic_group_info(self, chat: Dict[str, Any]) -> Dict[str, Any]:
@@ -379,7 +379,7 @@ class Model:
         info = {
             name: status,
             "Username": user.get("username", ""),
-            "Bio": user_info.get("bio", ""),
+            "Bio": user_info.get("bio", {"text": ""})["text"],
             "Phone": user.get("phone_number", ""),
             "User Id": user_id,
             "Type": user_type,

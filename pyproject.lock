@@ -31,13 +31,15 @@ platform = "*"
 
 [[package]]
 name = "python-telegram"
-version = "0.16.0"
+version = "0.17.0"
 description = "Python library to help you build your own Telegram clients"
 category = "main"
 optional = false
 python-versions = "*"
 platform = "*"
 
+[package.dependencies]
+telegram-text = ">= 0.1.0.0, < 0.2.0.0"
 [[package]]
 name = "pywin32"
 version = "305"
@@ -47,10 +49,19 @@ optional = false
 python-versions = "*"
 platform = "*"
 
+[[package]]
+name = "telegram-text"
+version = "0.1.1"
+description = "Python markup module for Telegram messenger. This module provides a rich list of components to build any possible markup fast and render it to specific html or MarkdownV2 formats."
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+platform = "*"
+
 [metadata]
 python-versions = "^3.10"
 platform = "*"
-content-hash = "47c151f1c93602a42bc61a002082418be9f13a130d20a96a41080b177327b229"
+content-hash = "f71787ce7c53c2e6a375b2313e82b9041a1b49a66e5335c4ff3e23cf3055bf5b"
 
 [metadata.hashes]
 plumbum = []
@@ -58,3 +69,4 @@ pyfzf = []
 pyperclip = []
 python-telegram = []
 pywin32 = []
+telegram-text = []

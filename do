@@ -26,7 +26,7 @@ main() {
         ;;
 
     local)
-        python3 -m pip install --user --no-cache --upgrade .
+        python3 -m pip install --user --no-cache --upgrade . --break-system-packages
         ;;
 
     upgrade)

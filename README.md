@@ -3,6 +3,11 @@
 > This is not an actively-developed project as of now, meaning don't
 > expect much stuff now, I might start working on it again, although it
 > works for me so I use it, anyways, I'm rlly sorry, kthxbye :)
+>
+> 2023/10/26 -- the project is not in development, if u wanna go fork this project,
+> fix any feature losses and improve the project as a whole, currently its dead and
+> i just hold it at a state of 'if it works for me it works for everyone', feel free to
+> advertise ur forks in issues and solve the issues reported there, thanks
 
 A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI client
 

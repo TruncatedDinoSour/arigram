@@ -13,6 +13,9 @@ A fork of [tg](https://github.com/paul-nameless/tg) -- a hackable telegram TUI c
 
 ![arigram screenshot](arigram-screenshot.png)
 
+## Featured forks
+
+- <https://github.com/giwinax/arigram> -- fixes and improvements
 
 ## Features
 

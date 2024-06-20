@@ -1,3 +1,4 @@
+# This repository has been migrated to the self-hosted ari-web Forgejo instance: <https://git.ari.lt/ari/arigram>
 # Arigram
 
 > This is not an actively-developed project as of now, meaning don't
